@@ -26,11 +26,10 @@ jobs:
           python3 scripts/test_collect.py
           node scripts/test_game.mjs
 
-      - name: 식당 수집 (네이버 지역 검색)
+      - name: 식당 수집 (카카오 로컬)
         if: github.event_name != 'push'
         env:
-          NAVER_SEARCH_CLIENT_ID: ${{ secrets.NAVER_SEARCH_CLIENT_ID }}
-          NAVER_SEARCH_CLIENT_SECRET: ${{ secrets.NAVER_SEARCH_CLIENT_SECRET }}
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
         run: python3 scripts/collect.py
 
       - name: 변경분 커밋

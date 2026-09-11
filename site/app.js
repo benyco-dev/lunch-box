@@ -146,9 +146,6 @@ function renderWorldcup() {
 }
 
 // ---- 결과: 식당 목록 + 지도 ----
-const naverLink = (r) =>
-  `https://map.naver.com/p/search/${encodeURIComponent(`${r.address.split(" ").slice(0, 2).join(" ")} ${r.name}`)}`;
-
 function showResult(menu, label) {
   const list = places[menu] ?? [];
   $("#result").hidden = false;
@@ -162,7 +159,7 @@ function showResult(menu, label) {
               h("strong", { textContent: r.name }),
               h("span", { textContent: `${r.category} · ${r.distance}m` }),
             ),
-            h("a", { href: naverLink(r), target: "_blank", rel: "noopener", textContent: "네이버지도 ↗" }),
+            h("a", { href: r.url, target: "_blank", rel: "noopener", textContent: "카카오맵 ↗" }),
           ))
       : [h("li", { textContent: hasData ? "반경 안 식당이 없어요" : "식당 데이터가 아직 없어요" })]),
   );

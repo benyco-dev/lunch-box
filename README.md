@@ -4,38 +4,39 @@
 
 * **룰렛** — 종목(한식·중식·일식…)을 고르고 돌린다
 * **메뉴 월드컵** — 종목별 8강 / 16강 / 32강 토너먼트로 직접 고른다
-* 정해진 메뉴의 **근처 식당 목록 + 지도**(OpenStreetMap, 키 불필요) + 네이버지도 링크
+* 정해진 메뉴의 **근처 식당 목록 + 지도**(OpenStreetMap, 키 불필요) + 카카오맵 링크
 
 서버 없이 Cloud Storage 버킷 하나로 서빙하고, GitHub Actions가 매월 식당을 다시 수집해 배포한다.
 
 ```
-GitHub Actions ─ 네이버 지역 검색 → site/data/restaurants.json ─(WIF, 키 파일 없음)→ GCS 버킷 → 공개 URL
+GitHub Actions ─ 카카오 로컬 검색 → site/data/restaurants.json ─(WIF, 키 파일 없음)→ GCS 버킷 → 공개 URL
 브라우저 ─ Leaflet + OpenStreetMap 타일 (지도 표시만, API 키 없음)
 ```
 
 ## 구조
 
 ```
-site/data/menus.json        메뉴 카탈로그 + 중심 좌표·반경·검색 지역. 수집기와 사이트가 같이 읽는다
-scripts/collect.py          수집   네이버 지역 검색 → site/data/restaurants.json
-scripts/test_collect.py     검증   좌표 변환·거리·반경 필터·중복 제거
+site/data/menus.json        메뉴 카탈로그 + 중심 좌표·반경. 수집기와 사이트가 같이 읽는다
+scripts/collect.py          수집   카카오 로컬 키워드 검색 → site/data/restaurants.json
+scripts/test_collect.py     검증   응답 변환·반경 필터·중복 제거
 site/game.js                도메인 순수 함수(토너먼트·룰렛 각도). DOM·fetch 없음
 scripts/test_game.mjs       검증   브래킷 진행·룰렛 정지 위치
 site/app.js                 표현   game.js 결과와 JSON을 그리기만 함
 ```
 
-* **수집 ↔ 사이트**: `restaurants.json` 이 유일한 접점. 네이버 응답 스키마는 `collect.py` 의 `slim()` 에서
-  `{name, category, address, lat, lng, distance}` 로 좁혀지고 바깥으로 새지 않는다.
+* **수집 ↔ 사이트**: `restaurants.json` 이 유일한 접점. 카카오 응답 스키마는 `collect.py` 의 `slim()` 에서
+  `{name, category, address, lat, lng, distance, url}` 로 좁혀지고 바깥으로 새지 않는다.
   나중에 다른 지도 API로 바꿔도 `slim()` 과 `search()` 만 고치면 된다.
 * **도메인 ↔ 표현**: `game.js` 는 브라우저와 node 테스트에서 같은 코드로 돈다.
 * 식당이 0곳인 메뉴는 게임에 올리지 않는다. 월드컵 크기는 종목의 메뉴 수로 제한된다.
 
-### 네이버 지역 검색의 한계
+### 왜 카카오 로컬인가
 
-쿼리당 **최대 5건**, 반경 검색 파라미터가 없다. 그래서 `"<지역> <메뉴>"` 를
-`menus.json` 의 `areas` 개수만큼 검색하고, 좌표로 거리를 계산해 반경 밖을 버린다.
-메뉴 약 90개 × 지역 3개 = 월 1회 270여 호출(일 한도 25,000).
-놓치는 식당이 있으면 `areas` 에 키워드를 추가한다.
+메뉴 이름을 `radius=500`, `category_group_code=FD6`(음식점)로 검색하면 메뉴별 식당 목록이 바로 나온다.
+쿼리당 최대 45건(15건 × 3페이지). 메뉴 약 90개면 월 1회 수백 호출이라 무료 한도 안이다.
+
+처음엔 네이버 지역 검색을 검토했지만 쿼리당 5건에 반경 파라미터가 없어서 뺐다.
+OpenStreetMap은 반경 500m 안 식당이 3곳뿐이라 데이터 소스로는 부족했다.
 
 ## 로컬 실행
 
@@ -52,9 +53,9 @@ python3 -m http.server 8000 -d site                 # http://localhost:8000
 
 | 키 | 발급처 | 노출 |
 | --- | --- | --- |
-| `NAVER_SEARCH_CLIENT_ID` / `_SECRET` | [NAVER Developers](https://developers.naver.com/apps) → 애플리케이션 등록 → 검색 API | CI에서만. 사이트에 안 나감 |
+| `KAKAO_REST_API_KEY` | [Kakao Developers](https://developers.kakao.com) → 앱 생성 → REST API 키, 제품 설정에서 카카오맵 사용 ON | CI에서만. 사이트에 안 나감 |
 
-네이버 지도 API는 쓰지 않는다. 지도는 OpenStreetMap 타일이라 키가 필요 없고, 식당마다 네이버지도 검색 링크를 붙인다.
+지도는 OpenStreetMap 타일이라 키가 필요 없고, 식당마다 카카오맵 상세 링크를 붙인다.
 
 ## 배포 인프라 (GCP)
 
@@ -78,10 +79,10 @@ REPO=<owner>/<repo>
 | `GCP_WIF_PROVIDER` | `projects/<프로젝트번호>/locations/global/workloadIdentityPools/github/providers/github-actions` |
 | `GCP_SA_EMAIL` | `gha-deploy@<프로젝트ID>.iam.gserviceaccount.com` |
 | `GCS_BUCKET` | 버킷 이름 |
-| `NAVER_SEARCH_CLIENT_ID` / `NAVER_SEARCH_CLIENT_SECRET` | 네이버 검색 API |
+| `KAKAO_REST_API_KEY` | 카카오 REST API 키 |
 
 접속: `https://storage.googleapis.com/<BUCKET>/index.html` — `/index.html` 까지 붙여야 한다.
 
 ## 데이터 출처
 
-식당 정보는 네이버 지역 검색 API, 지도는 © OpenStreetMap 기여자. 이 저장소는 네이버와 관련이 없다.
+식당 정보는 카카오 로컬 API, 지도는 © OpenStreetMap 기여자. 이 저장소는 카카오와 관련이 없다.
