@@ -46,7 +46,7 @@ function renderChips() {
       h("button", {
         className: "chip",
         ariaPressed: String(c === category),
-        textContent: `${c} ${c === "전체" ? all.length : categories[c].length}`,
+        textContent: c, // 숫자는 탭마다 단위가 달라(식당 곳 / 메뉴 개) 각 탭 안내 문구에서 보여준다
         onclick: () => {
           category = c;
           renderChips();
@@ -123,7 +123,7 @@ function renderWorldcup() {
   if (!bracket) {
     const n = pool().length, sizes = sizesFor(n);
     box.replaceChildren(
-      h("p", { className: "hint", textContent: sizes.length ? "몇 강으로 할까요?" : `메뉴가 ${n}개뿐이라 8강을 못 만들어요. 전체나 룰렛으로 골라보세요.` }),
+      h("p", { className: "hint", textContent: sizes.length ? `메뉴 ${n}개 · 몇 강으로 할까요?` : `메뉴가 ${n}개뿐이라 8강을 못 만들어요. 전체나 룰렛으로 골라보세요.` }),
       h("div", { className: "sizes" },
         ...sizes.map((s) => h("button", { className: "btn", textContent: `${s}강`, onclick: () => { bracket = startBracket(pool(), s); renderWorldcup(); } })),
       ),
