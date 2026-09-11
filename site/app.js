@@ -1,5 +1,5 @@
 // 표현만. 규칙은 game.js, 데이터는 data/*.json 이 가진다.
-import { shuffle, sizesFor, startBracket, pick, champion, roundName, hopPath, hopDelay } from "./game.js";
+import { shuffle, sizesFor, startBracket, pick, champion, roundName, reelStrip } from "./game.js";
 
 const $ = (s) => document.querySelector(s);
 const h = (tag, props = {}, ...kids) => {
@@ -50,7 +50,7 @@ function renderChips() {
         onclick: () => {
           category = c;
           renderChips();
-          drawGrid();
+          drawReel();
           bracket = null;
           renderWorldcup();
         },
@@ -59,57 +59,61 @@ function renderChips() {
   );
 }
 
-// ---- 사진 룰렛 ----
-const GRID_MAX = 12; // 한 화면에 12곳. 섞기로 다른 식당을 올린다
-const grid = $("#grid");
-let onGrid = [];
-let at = 0;
+// ---- 사진 릴: 종목의 식당 전체에서 균등하게 하나를 먼저 뽑고, 릴은 거기에 멈추는 연출만 한다 ----
+const reel = $("#reel");
+const strip = $("#strip");
 let spinning = false;
+let winner = null;
+let target = -1;
 
 const photo = (shop, className) =>
-  shop.photo ? h("img", { className, src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "";
+  shop?.photo ? h("img", { className, src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "";
+const tile = (s) => h("figure", { className: "tile" }, photo(s), h("figcaption", { textContent: s.name }));
 
-function drawGrid() {
+function drawReel() {
   if (spinning) return;
   const all = shopPool();
-  onGrid = shuffle(all).slice(0, GRID_MAX);
-  at = 0;
-  grid.replaceChildren(...onGrid.map((s) => h("figure", { className: "tile" }, photo(s), h("figcaption", { textContent: s.name }))));
-  $("#roulette-hint").textContent = onGrid.length
-    ? `근처 식당 ${all.length}곳 중 ${onGrid.length}곳에서 골라요`
-    : "식당 데이터가 아직 없어요";
-  $("#spin").disabled = !onGrid.length;
+  strip.classList.remove("moving");
+  strip.style.transform = "";
+  strip.replaceChildren(...shuffle(all).slice(0, 12).map(tile));
+  $("#roulette-hint").textContent = all.length ? `근처 식당 ${all.length}곳 전체에서 뽑아요` : "식당 데이터가 아직 없어요";
+  $("#spin").disabled = !all.length;
 }
 
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-
-$("#spin").onclick = async () => {
-  if (spinning || !onGrid.length) return;
+$("#spin").onclick = () => {
+  const all = shopPool();
+  if (spinning || !all.length) return;
   spinning = true;
   $("#spin").disabled = true;
-  grid.classList.add("spinning");
-  const k = Math.floor(Math.random() * onGrid.length);
-  const path = matchMedia("(prefers-reduced-motion: reduce)").matches ? [k] : hopPath(onGrid.length, at, k);
-  for (const [i, idx] of path.entries()) {
-    [...grid.children].forEach((t, j) => t.classList.toggle("on", j === idx));
-    await wait(hopDelay(i, path.length));
-  }
-  at = k;
+  winner = all[Math.floor(Math.random() * all.length)];
+  const r = reelStrip(all, winner);
+  target = r.target;
+
+  strip.classList.remove("moving");
+  strip.style.transform = "translateX(0)";
+  strip.replaceChildren(...r.items.map(tile));
+  const t = strip.children[target];
+  const jitter = (Math.random() - 0.5) * t.offsetWidth * 0.6; // 칸 가운데서 살짝 비껴 멈춰야 진짜 같다
+  const x = t.offsetLeft + t.offsetWidth / 2 - reel.clientWidth / 2 + jitter; // offsetLeft 읽기가 리플로를 강제해 transition이 처음부터 돈다
+  strip.classList.add("moving");
+  strip.style.transform = `translateX(${-x}px)`;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) landed();
+};
+
+function landed() {
   spinning = false;
   $("#spin").disabled = false;
-  const shop = onGrid[k];
-  showResult("🎯 룰렛이 골랐어요", shop.name, [shop]);
-};
-$("#reshuffle").onclick = () => {
-  grid.classList.remove("spinning");
-  drawGrid();
-};
+  strip.children[target]?.classList.add("on");
+  showResult("🎯 룰렛이 골랐어요", winner.name, [winner]);
+}
+strip.addEventListener("transitionend", (e) => e.target === strip && e.propertyName === "transform" && landed());
 
 // ---- 월드컵 ----
 let bracket = null;
 
 const card = (menu) =>
   h("button", { className: "card", onclick: () => { bracket = pick(bracket, menu); renderWorldcup(); } },
+    photo(placesOf(menu).find((s) => s.photo)),
     h("strong", { textContent: menu }),
     h("small", { textContent: [categoryOf[menu], placesOf(menu).length && `근처 ${placesOf(menu).length}곳`].filter(Boolean).join(" · ") }),
   );
@@ -194,5 +198,5 @@ function focusMarker(idx) {
 }
 
 renderChips();
-drawGrid();
+drawReel();
 renderWorldcup();
