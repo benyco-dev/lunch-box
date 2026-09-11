@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#111113" media="(prefers-color-scheme: dark)">
   <title>점심 뭐 먹지?</title>
+  <script>document.documentElement.classList.add("js")</script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" integrity="sha384-GIdEBaqGN9mNkDkMkzMHW8EKUqtpPIe/sLj1X7DIrnc9uPtLROJgmuDlh+3rBw0j" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css" integrity="sha384-6p9AefaqUhEVheRlj1mpAkbngHXy9mbYMrIdcIt4Jlc9lOLIablJq3bBsLOjGwZ7" crossorigin="anonymous">
@@ -16,18 +17,29 @@
   <script type="module" src="app.js"></script>
 </head>
 <body>
-  <div class="app">
-    <header class="top">
-      <span class="mark" aria-hidden="true"><i class="ph-fill ph-bowl-food"></i></span>
-      <div>
-        <h1>점심 뭐 먹지?</h1>
-        <p id="status" class="status"></p>
-      </div>
-    </header>
+  <header class="nav">
+    <div class="nav-in">
+      <a class="brand" href="#top" aria-label="맨 위로">
+        <span class="mark sm" aria-hidden="true"><i class="ph-fill ph-bowl-food"></i></span>
+        <strong class="nav-name">점심 뭐 먹지?</strong>
+      </a>
+      <p id="status" class="status"></p>
+    </div>
+  </header>
 
-    <main class="layout">
-      <section class="panel play enter">
-        <div class="seg" role="tablist" aria-label="고르는 방식">
+  <div class="app" id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1 class="hero-title"><span class="line"><span style="--i:0">오늘</span> <span style="--i:1">점심,</span></span> <span class="line"><span style="--i:2">뭐</span> <span style="--i:3">먹지?</span></span></h1>
+        <p id="hero-sub" class="hero-sub" style="--i:4">근처 식당에서 룰렛이나 메뉴 월드컵으로 골라요.</p>
+        <a class="cta hero-cta" href="#app" style="--i:5">고르러 가기<i class="ph ph-arrow-down"></i></a>
+      </div>
+      <div class="wall-stage"><div id="wall" class="wall" aria-hidden="true"></div></div>
+    </section>
+
+    <main id="app" class="layout">
+      <section class="panel play reveal">
+        <div class="seg" role="tablist" aria-label="고르는 방식" data-active="roulette">
           <button role="tab" aria-selected="true" data-tab="roulette"><i class="ph ph-dice-five"></i>룰렛</button>
           <button role="tab" aria-selected="false" data-tab="worldcup"><i class="ph ph-trophy"></i>메뉴 월드컵</button>
         </div>
@@ -45,15 +57,15 @@
         </div>
       </section>
 
-      <section id="result" class="panel result enter" aria-live="polite">
+      <section id="result" class="panel result reveal" style="--d:.12s" aria-live="polite">
         <div id="result-empty" class="empty">
           <i class="ph ph-fork-knife"></i>
           <p>룰렛을 돌리거나 월드컵을 끝내면<br>여기에 근처 식당이 나와요</p>
         </div>
         <div id="result-body" hidden>
-          <p id="result-label" class="label"></p>
-          <h2 id="result-title"></h2>
-          <div id="map" hidden></div>
+          <p id="result-label" class="label" style="--i:0"></p>
+          <h2 id="result-title" style="--i:1"></h2>
+          <div id="map" style="--i:2" hidden></div>
           <ul id="places"></ul>
         </div>
       </section>

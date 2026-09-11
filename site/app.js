@@ -8,6 +8,13 @@ const h = (tag, props = {}, ...kids) => {
   return el;
 };
 const getJSON = (p) => fetch(p).then((r) => (r.ok ? r.json() : null), () => null);
+const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+// 같은 CSS 등장 애니메이션을 다시 재생한다. 클래스를 뗐다가 리플로 후 다시 붙여야 브라우저가 새로 시작한다
+const replay = (el) => {
+  el.classList.remove("enter");
+  void el.offsetWidth;
+  el.classList.add("enter");
+};
 
 const [cfg, data] = await Promise.all([getJSON("data/menus.json"), getJSON("data/restaurants.json")]);
 
@@ -26,17 +33,44 @@ let category = "전체";
 const pool = () => (category === "전체" ? all : categories[category]);
 const shopPool = () => [...new Set(pool().flatMap(placesOf))];
 
+const shopCount = Object.keys(shops).length;
 const updated = hasData && new Date(data.updated).toLocaleDateString("ko-KR", { month: "long", day: "numeric" });
-$("#status").textContent = `${cfg.center.name} 반경 ${cfg.radius}m\n` +
-  (hasData ? `식당 ${Object.keys(shops).length}곳, ${updated} 갱신` : "식당 데이터 수집 전");
+$("#status").textContent = hasData ? `식당 ${shopCount}곳, ${updated} 갱신` : "식당 데이터 수집 전";
+$("#hero-sub").textContent = `${cfg.center.name} 반경 ${cfg.radius}m 안의 ${hasData ? `식당 ${shopCount}곳` : "식당"}에서 룰렛이나 메뉴 월드컵으로 골라요.`;
+
+// ---- 첫 화면 사진 벽: 열마다 같은 사진을 두 벌 깔아 CSS로 끝없이 흘린다 ----
+function buildWall() {
+  const photos = shuffle(Object.values(shops).filter((s) => s.photo)).slice(0, 32);
+  if (photos.length < 8) return $(".wall-stage").remove();
+  const cols = [0, 1, 2, 3].map((c) => photos.filter((_, i) => i % 4 === c));
+  $("#wall").replaceChildren(
+    ...cols.map((col, c) =>
+      h("div", { className: "wall-col", style: `--dur:${44 + c * 7}s` },
+        ...[...col, ...col].map((s) => h("img", { src: s.photo, alt: "", decoding: "async" })),
+      )),
+  );
+}
+
+// 스크롤해서 들어온 패널은 떠오르고, 사진 벽은 화면 밖에 있으면 멈춘다
+const watch = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.target.id === "wall") e.target.classList.toggle("paused", !e.isIntersecting);
+    else if (e.isIntersecting) {
+      e.target.classList.add("in");
+      watch.unobserve(e.target);
+    }
+  }
+}, { threshold: 0.12 });
 
 // ---- 탭 · 종목 ----
 document.querySelectorAll("[data-tab]").forEach((tab) => {
   tab.onclick = () => {
+    $(".seg").dataset.active = tab.dataset.tab; // CSS가 선택 표시를 미끄러뜨린다
     document.querySelectorAll("[data-tab]").forEach((t) => {
       t.ariaSelected = String(t === tab);
       $(`#${t.dataset.tab}`).hidden = t !== tab;
     });
+    replay($(`#${tab.dataset.tab}`));
   };
 });
 
@@ -101,7 +135,7 @@ $("#spin").onclick = () => {
   const x = t.offsetLeft + t.offsetWidth / 2 - reel.clientWidth / 2 + jitter; // offsetLeft 읽기가 리플로를 강제해 transition이 처음부터 돈다
   strip.classList.add("moving");
   strip.style.transform = `translateX(${-x}px)`;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) landed();
+  if (reducedMotion()) landed();
 };
 
 function landed() {
@@ -115,9 +149,28 @@ strip.addEventListener("transitionend", (e) => e.target === strip && e.propertyN
 
 // ---- 월드컵 ----
 let bracket = null;
+let choosing = false;
 
-const card = (menu) =>
-  h("button", { className: "card", onclick: () => { bracket = pick(bracket, menu); renderWorldcup(); } },
+// 고른 카드는 튀어 오르고 다른 카드는 가라앉은 뒤 다음 대결로 넘어간다
+async function choose(el, menu) {
+  if (choosing) return;
+  choosing = true;
+  const other = [...el.parentElement.querySelectorAll(".card")].find((c) => c !== el);
+  if (!reducedMotion()) {
+    await Promise.all([
+      el.animate([{ transform: "scale(1)" }, { transform: "scale(1.06)" }],
+        { duration: 320, easing: "cubic-bezier(.34, 1.56, .64, 1)", fill: "forwards" }).finished,
+      other.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(.9) translateY(10px)" }],
+        { duration: 260, easing: "ease-in", fill: "forwards" }).finished,
+    ]);
+  }
+  choosing = false;
+  bracket = pick(bracket, menu);
+  renderWorldcup();
+}
+
+const card = (menu, i) =>
+  h("button", { className: "card", style: `--i:${i}`, onclick: (e) => choose(e.currentTarget, menu) },
     pic(placesOf(menu).find((s) => s.photo)),
     h("strong", { textContent: menu }),
     h("small", { textContent: [categoryOf[menu], placesOf(menu).length && `근처 ${placesOf(menu).length}곳`].filter(Boolean).join(" · ") }),
@@ -132,8 +185,8 @@ function renderWorldcup() {
         ? h("p", { className: "hint", textContent: `메뉴 ${n}개로 몇 강을 할까요?` })
         : h("p", { className: "hint warn", textContent: `메뉴가 ${n}개뿐이라 8강을 못 만들어요. 전체나 룰렛으로 골라보세요.` }),
       h("div", { className: "sizes" },
-        ...sizes.map((s) =>
-          h("button", { className: "size", onclick: () => { bracket = startBracket(pool(), s); renderWorldcup(); } },
+        ...sizes.map((s, i) =>
+          h("button", { className: "size", style: `--i:${i}`, onclick: () => { bracket = startBracket(pool(), s); renderWorldcup(); } },
             h("strong", { textContent: `${s}강` }),
             h("span", { textContent: `${s - 1}번 고르기` }),
           )),
@@ -154,7 +207,7 @@ function renderWorldcup() {
       h("strong", { textContent: roundName(round.length) }),
       h("span", { textContent: `${i / 2 + 1} / ${round.length / 2}` }),
     ),
-    h("div", { className: "match" }, card(round[i]), h("span", { className: "vs", textContent: "VS" }), card(round[i + 1])),
+    h("div", { className: "match" }, card(round[i], 0), h("span", { className: "vs", textContent: "VS" }), card(round[i + 1], 1)),
   );
 }
 
@@ -163,15 +216,13 @@ function showResult(icon, label, title, list) {
   $("#result-empty").hidden = true;
   const body = $("#result-body");
   body.hidden = false;
-  body.classList.remove("enter");
-  void body.offsetWidth; // 리플로를 한 번 일으켜야 같은 애니메이션이 다시 재생된다
-  body.classList.add("enter");
+  replay(body);
   $("#result-label").replaceChildren(h("i", { className: `ph-fill ${icon}` }), label);
   $("#result-title").textContent = title;
   $("#places").replaceChildren(
     ...(list.length
       ? list.map((r, idx) =>
-          h("li", {},
+          h("li", { style: `--i:${idx}` },
             pic(r, "thumb"),
             h("button", { className: "place", onclick: () => focusMarker(idx) },
               h("strong", { textContent: r.name }),
@@ -185,7 +236,7 @@ function showResult(icon, label, title, list) {
       : [h("li", { className: "none", textContent: hasData ? "반경 안 식당이 없어요" : "식당 데이터가 아직 없어요" })]),
   );
   drawMap(list);
-  if (!matchMedia("(min-width: 960px)").matches) $("#result").scrollIntoView({ behavior: "smooth", block: "start" }); // 넓은 화면은 결과가 옆에 고정돼 있다
+  if (!matchMedia("(min-width: 960px)").matches) $("#result").scrollIntoView({ block: "start" }); // 넓은 화면은 결과가 옆에 고정돼 있다. 부드러운 스크롤은 CSS scroll-behavior가 맡는다
 }
 
 // 지도: Leaflet + OpenStreetMap 타일. API 키가 필요 없다
@@ -220,6 +271,8 @@ function focusMarker(idx) {
   markers[idx].openPopup();
 }
 
+buildWall();
 renderChips();
 drawReel();
 renderWorldcup();
+document.querySelectorAll(".reveal, #wall").forEach((el) => watch.observe(el));
