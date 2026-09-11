@@ -31,8 +31,8 @@ export function reelStrip(pool, winner, { length = 60, tail = 6, rand = Math.ran
   return { target, items: Array.from({ length }, (_, i) => (i === target ? winner : pool[Math.floor(rand() * pool.length)])) };
 }
 
-// ---- 함께 고르기: 사람마다 메뉴 하나(없으면 null). 뽑기는 고른 메뉴 목록에서 하므로 여러 명이 고른 메뉴일수록 잘 뽑힌다 ----
-// 인원이 바뀌어도 이미 고른 메뉴는 앞사람부터 유지한다
+// ---- 함께 고르기: 사람마다 식당 하나(없으면 null). 뽑기는 고른 목록에서 하므로 여러 명이 고른 식당일수록 잘 뽑힌다 ----
+// 인원이 바뀌어도 이미 고른 것은 앞사람부터 유지한다
 export const resizePicks = (picks, n) => Array.from({ length: n }, (_, i) => picks[i] ?? null);
 
 // 빈 칸만 풀에서 무작위로 채운다

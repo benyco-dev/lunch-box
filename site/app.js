@@ -36,7 +36,7 @@ const shopPool = () => [...new Set(pool().flatMap(placesOf))];
 const shopCount = Object.keys(shops).length;
 const updated = hasData && new Date(data.updated).toLocaleDateString("ko-KR", { month: "long", day: "numeric" });
 $("#status").textContent = hasData ? `식당 ${shopCount}곳, ${updated} 갱신` : "식당 데이터 수집 전";
-$("#hero-sub").textContent = `${cfg.center.name} 반경 ${cfg.radius}m 안의 ${hasData ? `식당 ${shopCount}곳` : "식당"}에서 룰렛이나 메뉴 월드컵으로 골라요.`;
+$("#hero-sub").textContent = `${cfg.center.name} 반경 ${cfg.radius}m 안의 ${hasData ? `식당 ${shopCount}곳` : "식당"}을 여럿이 함께, 또는 룰렛이나 월드컵으로 골라요.`;
 
 // ---- 첫 화면 사진 벽: 열마다 같은 사진을 두 벌 깔아 CSS로 끝없이 흘린다 ----
 function buildWall() {
@@ -165,22 +165,38 @@ $("#spin").onclick = () => {
   });
 };
 
-// ---- 함께 고르기: 사람마다 메뉴를 고르거나 랜덤, 고른 메뉴들 중에서 뽑기 ----
+// ---- 함께 고르기: 사람마다 식당을 고르거나 랜덤, 고른 식당들 중에서 뽑기 ----
 const groupReel = reelOf($("#group-reel"));
-let picks = [null, null, null];
+let picks = [null, null, null]; // 식당 id
 let shownRows = 0; // 새로 생긴 줄만 등장 애니메이션
 let flashRow = -1; // 방금 바뀐 줄 강조
-const randomMenu = () => pool()[Math.floor(Math.random() * pool().length)];
+const randomShop = () => {
+  const list = shopPool();
+  return list[Math.floor(Math.random() * list.length)]?.id ?? null;
+};
 
-const menuSelect = (value, i) =>
+// 식당마다 걸린 메뉴(카탈로그 순서). 첫 메뉴의 종목으로 목록을 묶는다
+const menusOfShop = {};
+for (const m of all) for (const s of placesOf(m)) (menusOfShop[s.id] ??= []).push(m);
+const shortName = (s) => s.name.replace(/\s+\S+점$/, ""); // '우장관 과천점' → '우장관'. 반경 500m 안이라 지점명이 없어도 헷갈리지 않는다
+const menusText = (s) => {
+  const ms = menusOfShop[s.id] ?? [];
+  return ms.slice(0, 2).join(", ") + (ms.length > 2 ? " 외" : "");
+};
+const shopLabel = (s) => (menusText(s) ? `${shortName(s)} (${menusText(s)})` : shortName(s));
+const shopGroups = Object.keys(categories)
+  .map((c) => [c, Object.values(shops).filter((s) => categoryOf[menusOfShop[s.id]?.[0]] === c).sort((a, b) => a.distance - b.distance)])
+  .filter(([, list]) => list.length);
+
+const shopSelect = (value, i) =>
   h("select", { className: "menu-select", onchange: (e) => setPick(i, e.target.value || null, true) },
-    h("option", { value: "", textContent: "메뉴 고르기" }),
-    ...Object.entries(categories).map(([c, ms]) =>
-      h("optgroup", { label: c }, ...ms.map((m) => h("option", { value: m, textContent: m, selected: m === value })))),
+    h("option", { value: "", textContent: "식당 고르기" }),
+    ...shopGroups.map(([c, list]) =>
+      h("optgroup", { label: c }, ...list.map((s) => h("option", { value: s.id, textContent: shopLabel(s), selected: s.id === value })))),
   );
 
-function setPick(i, menu, refocus = false) {
-  picks[i] = menu;
+function setPick(i, id, refocus = false) {
+  picks[i] = id;
   flashRow = i;
   renderGroup();
   if (refocus) $("#picks").children[i]?.querySelector("select").focus(); // 다시 그려도 키보드 위치를 잃지 않게
@@ -199,24 +215,26 @@ function renderGroup() {
   $("#minus").disabled = n <= 2;
   $("#plus").disabled = n >= 10;
   $("#picks").replaceChildren(
-    ...picks.map((menu, i) =>
+    ...picks.map((id, i) =>
       h("li", {
-        className: ["pick", menu ? "" : "unset", i >= shownRows ? "new" : "", i === flashRow ? "flash" : ""].join(" "),
+        className: ["pick", id ? "" : "unset", i >= shownRows ? "new" : "", i === flashRow ? "flash" : ""].join(" "),
         style: `--i:${Math.max(0, i - shownRows)}`,
       },
-        pic(menu && photoOf(menu), "thumb"),
+        pic(shops[id], "thumb"),
         h("label", { className: "pick-body" },
           h("span", { className: "who", textContent: `${i + 1}번` }),
-          menuSelect(menu, i),
+          h("strong", { className: "pick-name", textContent: id ? shortName(shops[id]) : "식당 고르기" }),
+          id ? h("span", { className: "pick-menus", textContent: menusText(shops[id]) }) : "",
+          shopSelect(id, i), // 투명하게 위에 겹쳐 두어 줄 전체를 누르면 목록이 열린다
           h("i", { className: "ph ph-caret-down", ariaHidden: "true" }),
         ),
-        h("button", { className: "icon-btn", ariaLabel: `${i + 1}번 메뉴 랜덤으로 고르기`, onclick: () => setPick(i, randomMenu()) },
+        h("button", { className: "icon-btn", ariaLabel: `${i + 1}번 식당 랜덤으로 고르기`, onclick: () => setPick(i, randomShop()) },
           h("i", { className: "ph ph-dice-five" })),
       )),
   );
   shownRows = n;
   flashRow = -1;
-  $("#group-hint").textContent = chosen < n ? `${n}명 중 ${chosen}명 골랐어요` : "다 골랐어요. 같은 메뉴가 많을수록 잘 뽑혀요";
+  $("#group-hint").textContent = chosen < n ? `${n}명 중 ${chosen}명 골랐어요` : "다 골랐어요. 같은 식당이 많을수록 잘 뽑혀요";
   $("#fill").disabled = chosen === n;
   $("#draw").disabled = spinning || chosen < n;
 }
@@ -225,7 +243,7 @@ $("#minus").onclick = () => setCount(picks.length - 1);
 $("#plus").onclick = () => setCount(picks.length + 1);
 $("#fill").onclick = () => {
   const before = picks;
-  picks = fillEmpty(picks, pool());
+  picks = fillEmpty(picks, shopPool().map((s) => s.id));
   flashRow = before.findIndex((m) => !m); // 첫 빈 칸을 강조
   renderGroup();
 };
@@ -238,14 +256,14 @@ $("#draw").onclick = () => {
   const reelEl = $("#group-reel");
   reelEl.hidden = false;
   replay(reelEl);
-  const tickets = picks.map((m) => ({ name: m, photo: photoOf(m)?.photo })); // 한 사람 = 한 장
+  const tickets = picks.map((id) => shops[id]); // 한 사람 = 한 장
   const winner = tickets[Math.floor(Math.random() * tickets.length)];
   groupReel.spin(tickets, winner, () => {
     spinning = false;
     $("#spin").disabled = !shopPool().length;
     renderGroup();
-    const votes = picks.filter((m) => m === winner.name).length;
-    showResult("ph-users-three", `${picks.length}명 중 ${votes}명이 고른 메뉴`, winner.name, placesOf(winner.name));
+    const votes = picks.filter((id) => id === winner.id).length;
+    showResult("ph-users-three", `${picks.length}명 중 ${votes}명이 고른 식당`, winner.name, [winner]);
   });
 };
 
