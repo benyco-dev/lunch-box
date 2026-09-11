@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>점심 뭐 먹지?</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>🍱 점심 뭐 먹지?</h1>
+    <p id="status" class="muted"></p>
+  </header>
+
+  <main>
+    <nav class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="roulette">🎯 룰렛</button>
+      <button role="tab" aria-selected="false" data-tab="worldcup">🏆 메뉴 월드컵</button>
+    </nav>
+
+    <div id="chips" class="chips" aria-label="종목"></div>
+
+    <section id="roulette" class="panel">
+      <div class="wheel-wrap">
+        <div class="pointer" aria-hidden="true"></div>
+        <canvas id="wheel" width="600" height="600" aria-label="메뉴 룰렛"></canvas>
+      </div>
+      <div class="row">
+        <button id="spin" class="btn primary">돌리기</button>
+        <button id="reshuffle" class="btn">메뉴 섞기</button>
+      </div>
+    </section>
+
+    <section id="worldcup" class="panel" hidden>
+      <div id="wc"></div>
+    </section>
+
+    <section id="result" class="panel" hidden aria-live="polite">
+      <p id="result-label" class="muted"></p>
+      <h2 id="result-title"></h2>
+      <div id="map" hidden></div>
+      <ul id="places"></ul>
+    </section>
+  </main>
+
+  <footer class="muted">식당 정보: 네이버 지역 검색 · 지도: NAVER Maps</footer>
+</body>
+</html>

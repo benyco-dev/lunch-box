@@ -1,0 +1,61 @@
+name: 식당 수집 및 배포
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 1 * *" # 매월 1일 09:00 KST — 식당은 자주 안 바뀐다
+  workflow_dispatch:
+
+permissions:
+  contents: write # 수집한 식당 데이터를 되커밋
+  id-token: write # Workload Identity Federation. 서비스 계정 키를 저장하지 않는다
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 로직 검증
+        run: |
+          python3 scripts/test_collect.py
+          node scripts/test_game.mjs
+
+      - name: 식당 수집 (네이버 지역 검색)
+        if: github.event_name != 'push'
+        env:
+          NAVER_SEARCH_CLIENT_ID: ${{ secrets.NAVER_SEARCH_CLIENT_ID }}
+          NAVER_SEARCH_CLIENT_SECRET: ${{ secrets.NAVER_SEARCH_CLIENT_SECRET }}
+        run: python3 scripts/collect.py
+
+      - name: 변경분 커밋
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data
+          git diff --staged --quiet || git commit -m "chore: 식당 데이터 갱신"
+          git push
+
+      - name: 지도 키 주입
+        env:
+          NAVER_MAP_KEY_ID: ${{ secrets.NAVER_MAP_KEY_ID }}
+        run: printf 'export default { naverMapKeyId: "%s" };\n' "$NAVER_MAP_KEY_ID" > site/config.js
+
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+
+      - name: Cloud Storage 배포
+        run: |
+          gcloud storage rsync site "gs://${{ secrets.GCS_BUCKET }}" \
+            --recursive --delete-unmatched-destination-objects \
+            --cache-control="public, max-age=300"
