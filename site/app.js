@@ -8,6 +8,8 @@ const h = (tag, props = {}, ...kids) => {
   return el;
 };
 const getJSON = (p) => fetch(p).then((r) => (r.ok ? r.json() : null), () => null);
+// 데이터 속 주소는 외부(카카오 검색 결과)에서 온다. http(s)만 링크·이미지로 쓴다 (javascript: 같은 스킴 차단)
+const safeUrl = (u) => (/^https?:\/\//.test(u ?? "") ? u : null);
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 // 같은 CSS 등장 애니메이션을 다시 재생한다. 클래스를 뗐다가 리플로 후 다시 붙여야 브라우저가 새로 시작한다
 const replay = (el) => {
@@ -40,7 +42,7 @@ $("#hero-sub").textContent = `${cfg.center.name} 반경 ${cfg.radius}m 안의 ${
 
 // ---- 첫 화면 사진 벽: 열마다 같은 사진을 두 벌 깔아 CSS로 끝없이 흘린다 ----
 function buildWall() {
-  const photos = shuffle(Object.values(shops).filter((s) => s.photo)).slice(0, 32);
+  const photos = shuffle(Object.values(shops).filter((s) => safeUrl(s.photo))).slice(0, 32);
   if (photos.length < 8) return $(".wall-stage").remove();
   const cols = [0, 1, 2, 3].map((c) => photos.filter((_, i) => i % 4 === c));
   $("#wall").replaceChildren(
@@ -97,7 +99,7 @@ function renderChips() {
 const pic = (shop, className = "") =>
   h("div", { className: `pic ${className}` },
     h("i", { className: "ph ph-fork-knife", ariaHidden: "true" }),
-    shop?.photo ? h("img", { src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "",
+    safeUrl(shop?.photo) ? h("img", { src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "",
   );
 const tile = (s) => h("figure", { className: "tile" }, pic(s), h("figcaption", { textContent: s.name }));
 const photoOf = (menu) => placesOf(menu).find((s) => s.photo); // 메뉴 대표 사진 = 가장 가까운 사진 있는 식당
@@ -349,8 +351,8 @@ function showResult(icon, label, title, list) {
               h("span", { textContent: `${r.category} · ${r.distance}m` }),
             ),
             h("div", { className: "links" },
-              h("a", { className: "go", href: r.url, target: "_blank", rel: "noopener" }, "카카오맵", h("i", { className: "ph ph-arrow-up-right" })),
-              r.photoSource ? h("a", { className: "source", href: r.photoSource, target: "_blank", rel: "noopener noreferrer", textContent: "사진 출처" }) : "",
+              safeUrl(r.url) ? h("a", { className: "go", href: r.url, target: "_blank", rel: "noopener" }, "카카오맵", h("i", { className: "ph ph-arrow-up-right" })) : "",
+              safeUrl(r.photoSource) ? h("a", { className: "source", href: r.photoSource, target: "_blank", rel: "noopener noreferrer", textContent: "사진 출처" }) : "",
             ),
           ))
       : [h("li", { className: "none", textContent: hasData ? "반경 안 식당이 없어요" : "식당 데이터가 아직 없어요" })]),
