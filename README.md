@@ -4,6 +4,7 @@
 
 * **사진 룰렛** — 종목의 근처 식당 전체에서 균등하게 하나를 뽑고, 사진 띠가 흘러가다 그 식당에 멈춘다
 * **메뉴 월드컵** — 종목별 8강 / 16강 / 32강 토너먼트로 직접 고른다. 카드엔 가장 가까운 식당 사진
+* **함께 고르기** — 인원(2~10명)을 정하고 사람마다 메뉴를 고르거나 랜덤으로 채운 뒤, 고른 메뉴들 중 하나를 뽑는다. 한 사람이 한 표라 여러 명이 고른 메뉴일수록 잘 뽑힌다
 * 정해진 메뉴의 **근처 식당 목록 + 지도**(OpenStreetMap, 키 불필요) + 카카오맵 링크
 
 서버 없이 Cloud Storage 버킷 하나로 서빙하고, GitHub Actions가 매월 식당을 다시 수집해 배포한다.
@@ -19,7 +20,7 @@ GitHub Actions ─ 카카오 로컬 검색 → site/data/restaurants.json ─(WI
 site/data/menus.json        메뉴 카탈로그 + 중심 좌표·반경. 수집기와 사이트가 같이 읽는다
 scripts/collect.py          수집   카카오 로컬 키워드 검색 + 블로그 검색(대표 사진) → site/data/restaurants.json
 scripts/test_collect.py     검증   응답 변환·반경 필터·중복 제거·대표 사진 매칭
-site/game.js                도메인 순수 함수(토너먼트·룰렛 각도). DOM·fetch 없음
+site/game.js                도메인 순수 함수(토너먼트·릴 당첨 칸·함께 고르기). DOM·fetch 없음
 scripts/test_game.mjs       검증   브래킷 진행·릴 당첨 칸 배치
 site/app.js                 표현   game.js 결과와 JSON을 그리기만 함
 ```

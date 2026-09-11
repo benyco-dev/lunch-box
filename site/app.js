@@ -1,5 +1,5 @@
 // 표현만. 규칙은 game.js, 데이터는 data/*.json 이 가진다.
-import { shuffle, sizesFor, startBracket, pick, champion, roundName, reelStrip } from "./game.js";
+import { shuffle, sizesFor, startBracket, pick, champion, roundName, reelStrip, resizePicks, fillEmpty } from "./game.js";
 
 const $ = (s) => document.querySelector(s);
 const h = (tag, props = {}, ...kids) => {
@@ -93,13 +93,6 @@ function renderChips() {
   );
 }
 
-// ---- 사진 릴: 종목의 식당 전체에서 균등하게 하나를 먼저 뽑고, 릴은 거기에 멈추는 연출만 한다 ----
-const reel = $("#reel");
-const strip = $("#strip");
-let spinning = false;
-let winner = null;
-let target = -1;
-
 // 사진 자리. 사진이 없거나 깨지면 뒤에 깔린 포크·나이프 아이콘이 보인다
 const pic = (shop, className = "") =>
   h("div", { className: `pic ${className}` },
@@ -107,13 +100,53 @@ const pic = (shop, className = "") =>
     shop?.photo ? h("img", { src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "",
   );
 const tile = (s) => h("figure", { className: "tile" }, pic(s), h("figcaption", { textContent: s.name }));
+const photoOf = (menu) => placesOf(menu).find((s) => s.photo); // 메뉴 대표 사진 = 가장 가까운 사진 있는 식당
+
+// ---- 사진 릴: 당첨은 호출하는 쪽이 미리 뽑고, 릴은 거기에 멈추는 연출만 한다. 룰렛과 함께 고르기가 같이 쓴다 ----
+let spinning = false;
+
+function reelOf(reelEl) {
+  const strip = reelEl.querySelector(".strip");
+  let target = -1;
+  let onLand = null;
+  const land = () => {
+    strip.children[target]?.classList.add("on");
+    strip.classList.add("done");
+    const done = onLand;
+    onLand = null;
+    done?.();
+  };
+  strip.addEventListener("transitionend", (e) => e.target === strip && e.propertyName === "transform" && land());
+  return {
+    show(items) {
+      strip.classList.remove("moving", "done");
+      strip.style.transform = "";
+      strip.replaceChildren(...items.map(tile));
+    },
+    spin(items, winner, done) {
+      const r = reelStrip(items, winner);
+      target = r.target;
+      onLand = done;
+      strip.classList.remove("moving", "done");
+      strip.style.transform = "translateX(0)";
+      strip.replaceChildren(...r.items.map(tile));
+      const t = strip.children[target];
+      const jitter = (Math.random() - 0.5) * t.offsetWidth * 0.6; // 칸 가운데서 살짝 비껴 멈춰야 진짜 같다
+      const x = t.offsetLeft + t.offsetWidth / 2 - reelEl.clientWidth / 2 + jitter; // offsetLeft 읽기가 리플로를 강제해 transition이 처음부터 돈다
+      strip.classList.add("moving");
+      strip.style.transform = `translateX(${-x}px)`;
+      if (reducedMotion()) land();
+    },
+  };
+}
+
+// ---- 룰렛: 종목의 식당 전체에서 균등하게 하나 ----
+const roulette = reelOf($("#reel"));
 
 function drawReel() {
   if (spinning) return;
   const all = shopPool();
-  strip.classList.remove("moving", "done");
-  strip.style.transform = "";
-  strip.replaceChildren(...shuffle(all).slice(0, 12).map(tile));
+  roulette.show(shuffle(all).slice(0, 12));
   $("#roulette-hint").textContent = all.length ? `근처 식당 ${all.length}곳 전체에서 뽑아요` : "식당 데이터가 아직 없어요";
   $("#spin").disabled = !all.length;
 }
@@ -123,29 +156,98 @@ $("#spin").onclick = () => {
   if (spinning || !all.length) return;
   spinning = true;
   $("#spin").disabled = true;
-  winner = all[Math.floor(Math.random() * all.length)];
-  const r = reelStrip(all, winner);
-  target = r.target;
-
-  strip.classList.remove("moving", "done");
-  strip.style.transform = "translateX(0)";
-  strip.replaceChildren(...r.items.map(tile));
-  const t = strip.children[target];
-  const jitter = (Math.random() - 0.5) * t.offsetWidth * 0.6; // 칸 가운데서 살짝 비껴 멈춰야 진짜 같다
-  const x = t.offsetLeft + t.offsetWidth / 2 - reel.clientWidth / 2 + jitter; // offsetLeft 읽기가 리플로를 강제해 transition이 처음부터 돈다
-  strip.classList.add("moving");
-  strip.style.transform = `translateX(${-x}px)`;
-  if (reducedMotion()) landed();
+  const winner = all[Math.floor(Math.random() * all.length)];
+  roulette.spin(all, winner, () => {
+    spinning = false;
+    $("#spin").disabled = false;
+    renderGroup();
+    showResult("ph-dice-five", "룰렛이 골랐어요", winner.name, [winner]);
+  });
 };
 
-function landed() {
-  spinning = false;
-  $("#spin").disabled = false;
-  strip.children[target]?.classList.add("on");
-  strip.classList.add("done");
-  showResult("ph-dice-five", "룰렛이 골랐어요", winner.name, [winner]);
+// ---- 함께 고르기: 사람마다 메뉴를 고르거나 랜덤, 고른 메뉴들 중에서 뽑기 ----
+const groupReel = reelOf($("#group-reel"));
+let picks = [null, null, null];
+let shownRows = 0; // 새로 생긴 줄만 등장 애니메이션
+let flashRow = -1; // 방금 바뀐 줄 강조
+const randomMenu = () => pool()[Math.floor(Math.random() * pool().length)];
+
+const menuSelect = (value, i) =>
+  h("select", { className: "menu-select", onchange: (e) => setPick(i, e.target.value || null, true) },
+    h("option", { value: "", textContent: "메뉴 고르기" }),
+    ...Object.entries(categories).map(([c, ms]) =>
+      h("optgroup", { label: c }, ...ms.map((m) => h("option", { value: m, textContent: m, selected: m === value })))),
+  );
+
+function setPick(i, menu, refocus = false) {
+  picks[i] = menu;
+  flashRow = i;
+  renderGroup();
+  if (refocus) $("#picks").children[i]?.querySelector("select").focus(); // 다시 그려도 키보드 위치를 잃지 않게
 }
-strip.addEventListener("transitionend", (e) => e.target === strip && e.propertyName === "transform" && landed());
+
+function setCount(n) {
+  picks = resizePicks(picks, Math.min(10, Math.max(2, n)));
+  replay($("#count"));
+  renderGroup();
+}
+
+function renderGroup() {
+  const n = picks.length;
+  const chosen = picks.filter(Boolean).length;
+  $("#count").textContent = n;
+  $("#minus").disabled = n <= 2;
+  $("#plus").disabled = n >= 10;
+  $("#picks").replaceChildren(
+    ...picks.map((menu, i) =>
+      h("li", {
+        className: ["pick", menu ? "" : "unset", i >= shownRows ? "new" : "", i === flashRow ? "flash" : ""].join(" "),
+        style: `--i:${Math.max(0, i - shownRows)}`,
+      },
+        pic(menu && photoOf(menu), "thumb"),
+        h("label", { className: "pick-body" },
+          h("span", { className: "who", textContent: `${i + 1}번` }),
+          menuSelect(menu, i),
+          h("i", { className: "ph ph-caret-down", ariaHidden: "true" }),
+        ),
+        h("button", { className: "icon-btn", ariaLabel: `${i + 1}번 메뉴 랜덤으로 고르기`, onclick: () => setPick(i, randomMenu()) },
+          h("i", { className: "ph ph-dice-five" })),
+      )),
+  );
+  shownRows = n;
+  flashRow = -1;
+  $("#group-hint").textContent = chosen < n ? `${n}명 중 ${chosen}명 골랐어요` : "다 골랐어요. 같은 메뉴가 많을수록 잘 뽑혀요";
+  $("#fill").disabled = chosen === n;
+  $("#draw").disabled = spinning || chosen < n;
+}
+
+$("#minus").onclick = () => setCount(picks.length - 1);
+$("#plus").onclick = () => setCount(picks.length + 1);
+$("#fill").onclick = () => {
+  const before = picks;
+  picks = fillEmpty(picks, pool());
+  flashRow = before.findIndex((m) => !m); // 첫 빈 칸을 강조
+  renderGroup();
+};
+
+$("#draw").onclick = () => {
+  if (spinning || picks.some((m) => !m)) return;
+  spinning = true;
+  renderGroup();
+  $("#spin").disabled = true;
+  const reelEl = $("#group-reel");
+  reelEl.hidden = false;
+  replay(reelEl);
+  const tickets = picks.map((m) => ({ name: m, photo: photoOf(m)?.photo })); // 한 사람 = 한 장
+  const winner = tickets[Math.floor(Math.random() * tickets.length)];
+  groupReel.spin(tickets, winner, () => {
+    spinning = false;
+    $("#spin").disabled = !shopPool().length;
+    renderGroup();
+    const votes = picks.filter((m) => m === winner.name).length;
+    showResult("ph-users-three", `${picks.length}명 중 ${votes}명이 고른 메뉴`, winner.name, placesOf(winner.name));
+  });
+};
 
 // ---- 월드컵 ----
 let bracket = null;
@@ -275,4 +377,5 @@ buildWall();
 renderChips();
 drawReel();
 renderWorldcup();
+renderGroup();
 document.querySelectorAll(".reveal, #wall").forEach((el) => watch.observe(el));

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { sizesFor, startBracket, pick, champion, roundName, reelStrip } from "../site/game.js";
+import { sizesFor, startBracket, pick, champion, roundName, reelStrip, resizePicks, fillEmpty } from "../site/game.js";
 
 const menus = Array.from({ length: 20 }, (_, i) => `메뉴${i}`);
 
@@ -30,4 +30,9 @@ for (const pool of [["a"], ["a", "b", "c"], menus]) {
   assert.equal(items[target], winner);
   assert.ok(items.every((x) => pool.includes(x)), "릴 칸은 전부 풀 안의 식당");
 }
+// 함께 고르기
+assert.deepEqual(resizePicks(["a", null, "c"], 5), ["a", null, "c", null, null], "늘리면 뒤에 빈 칸");
+assert.deepEqual(resizePicks(["a", "b", "c"], 2), ["a", "b"], "줄이면 뒷사람부터 빠짐");
+const filled = fillEmpty(["a", null, "c", null], ["x", "y"], () => 0.99);
+assert.deepEqual(filled, ["a", "y", "c", "y"], "빈 칸만 채움");
 console.log("ok");

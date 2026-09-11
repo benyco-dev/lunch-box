@@ -41,7 +41,8 @@
       <section class="panel play reveal">
         <div class="seg" role="tablist" aria-label="고르는 방식" data-active="roulette">
           <button role="tab" aria-selected="true" data-tab="roulette"><i class="ph ph-dice-five"></i>룰렛</button>
-          <button role="tab" aria-selected="false" data-tab="worldcup"><i class="ph ph-trophy"></i>메뉴 월드컵</button>
+          <button role="tab" aria-selected="false" data-tab="worldcup"><i class="ph ph-trophy"></i>월드컵</button>
+          <button role="tab" aria-selected="false" data-tab="group"><i class="ph ph-users-three"></i>함께</button>
         </div>
 
         <div id="chips" class="chips" aria-label="종목"></div>
@@ -54,6 +55,24 @@
 
         <div id="worldcup" class="stage" hidden>
           <div id="wc"></div>
+        </div>
+
+        <div id="group" class="stage" hidden>
+          <div class="people">
+            <p class="hint">몇 명이서 먹나요?</p>
+            <div class="stepper">
+              <button id="minus" aria-label="한 명 빼기"><i class="ph ph-minus"></i></button>
+              <span><output id="count" aria-live="polite">3</output>명</span>
+              <button id="plus" aria-label="한 명 더하기"><i class="ph ph-plus"></i></button>
+            </div>
+          </div>
+          <ol id="picks" class="picks"></ol>
+          <div class="group-foot">
+            <p id="group-hint" class="hint"></p>
+            <button id="fill" class="ghost"><i class="ph ph-dice-five"></i>빈 칸 랜덤</button>
+          </div>
+          <div id="group-reel" class="reel" hidden><div class="strip"></div></div>
+          <button id="draw" class="cta"><i class="ph-fill ph-shuffle"></i>이 중에서 뽑기</button>
         </div>
       </section>
 
