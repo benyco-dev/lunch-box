@@ -1,10 +1,12 @@
-"""카카오 로컬 키워드 검색 + 이미지 검색 → site/data/restaurants.json
+"""카카오 로컬 키워드 검색 + 블로그 검색 → site/data/restaurants.json
 
 메뉴 이름을 중심점 반경 안 음식점(FD6)으로 검색해 메뉴별 식당 목록을 만들고,
-식당마다 이미지 검색 첫 결과를 대표 사진으로 붙인다.
+식당마다 그 식당 후기 블로그 글의 대표 사진을 붙인다.
 """
+import html
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -14,7 +16,7 @@ from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "site" / "data"
 LOCAL = "https://dapi.kakao.com/v2/local/search/keyword.json"
-IMAGE = "https://dapi.kakao.com/v2/search/image"
+BLOG = "https://dapi.kakao.com/v2/search/blog"
 MAX_PAGE = 3  # 카카오는 쿼리당 15건 × 3페이지 = 45건까지만 준다
 
 
@@ -63,11 +65,32 @@ def search(query, center, radius, key):
     return docs
 
 
-def photo(shop, key):
-    """이미지 검색 첫 결과의 카카오 썸네일(130px)과 원문 링크. 원본 이미지는 블로그 핫링크 차단이 많아 안 쓴다."""
-    region = shop["address"].split()[1] if len(shop["address"].split()) > 1 else ""
-    docs = get(IMAGE, {"query": f"{shop['name']} {region}", "size": 1}, key)["documents"]
-    return (docs[0]["thumbnail_url"], docs[0]["doc_url"]) if docs else (None, None)
+def squash(text):
+    """태그·HTML 엔티티·공백을 걷어낸 소문자. 이름 비교용."""
+    return re.sub(r"\s+", "", html.unescape(re.sub(r"<[^>]+>", "", text))).lower()
+
+
+def base_name(name):
+    """'서울현방 과천점' → '서울현방'. 지점명은 후기 글마다 표기가 제각각이라 뺀다."""
+    return re.sub(r"\s+\S+점$", "", name)
+
+
+def pick_photo(docs, name, region_words, exclude=()):
+    """제목·본문에 식당 이름과 지역 단어가 둘 다 있는 글의 대표 사진(130px)과 글 링크.
+    이미지 검색은 제목·본문이 없어 식당과 무관한 사진이 섞였다. 맞는 글이 없으면 사진 없음이 낫다.
+    exclude: 사람 얼굴이 나오는 등 쓰면 안 되는 글 URL (menus.json photoExclude)."""
+    want = squash(base_name(name))
+    for d in docs:
+        text = squash(d["title"] + d["contents"])
+        if d["thumbnail"] and d["url"] not in exclude and want in text and any(squash(w) in text for w in region_words):
+            return d["thumbnail"], d["url"]
+    return None, None
+
+
+def photo(shop, cfg, key):
+    query = f"{base_name(shop['name'])} {cfg['regionWords'][0]}"
+    docs = get(BLOG, {"query": query, "size": 10}, key)["documents"]
+    return pick_photo(docs, shop["name"], cfg["regionWords"], cfg.get("photoExclude", ()))
 
 
 def main():
@@ -89,7 +112,7 @@ def main():
         sys.exit("반경 안 식당이 0건 — 키나 좌표를 확인하세요. 기존 데이터를 덮어쓰지 않습니다.")
 
     for s in shops.values():
-        s["photo"], s["photoSource"] = photo(s, key)
+        s["photo"], s["photoSource"] = photo(s, cfg, key)
 
     out = {"center": center, "radius": radius, "updated": date.today().isoformat(), "restaurants": shops, "menus": menus}
     (DATA / "restaurants.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n")

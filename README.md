@@ -17,8 +17,8 @@ GitHub Actions ─ 카카오 로컬 검색 → site/data/restaurants.json ─(WI
 
 ```
 site/data/menus.json        메뉴 카탈로그 + 중심 좌표·반경. 수집기와 사이트가 같이 읽는다
-scripts/collect.py          수집   카카오 로컬 키워드 검색 + 이미지 검색(대표 사진) → site/data/restaurants.json
-scripts/test_collect.py     검증   응답 변환·반경 필터·중복 제거
+scripts/collect.py          수집   카카오 로컬 키워드 검색 + 블로그 검색(대표 사진) → site/data/restaurants.json
+scripts/test_collect.py     검증   응답 변환·반경 필터·중복 제거·대표 사진 매칭
 site/game.js                도메인 순수 함수(토너먼트·룰렛 각도). DOM·fetch 없음
 scripts/test_game.mjs       검증   브래킷 진행·릴 당첨 칸 배치
 site/app.js                 표현   game.js 결과와 JSON을 그리기만 함
