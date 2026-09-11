@@ -25,7 +25,7 @@ got = nearby(docs, 500)
 assert [r["name"] for r in got] == ["가까운집", "김치찌개집"], got
 assert got[0]["address"] == "경기 과천시 갈현동 1"  # 도로명 없으면 지번
 assert got[1] == {
-    "name": "김치찌개집", "category": "한식 > 찌개,전골", "address": "경기 과천시 과천대로7길 1",
+    "id": "1", "name": "김치찌개집", "category": "한식 > 찌개,전골", "address": "경기 과천시 과천대로7길 1",
     "lat": 37.4183009, "lng": 126.9775157, "distance": 100, "url": "https://place.map.kakao.com/1",
 }, got[1]
 print("ok")

@@ -2,7 +2,7 @@
 
 회사 근처 반경 500m 식당으로 점심 메뉴를 고르는 정적 사이트.
 
-* **룰렛** — 종목(한식·중식·일식…)을 고르고 돌린다
+* **사진 룰렛** — 종목을 고르면 근처 식당 대표 사진 12장 중 하나에 멈춘다
 * **메뉴 월드컵** — 종목별 8강 / 16강 / 32강 토너먼트로 직접 고른다
 * 정해진 메뉴의 **근처 식당 목록 + 지도**(OpenStreetMap, 키 불필요) + 카카오맵 링크
 
@@ -17,15 +17,15 @@ GitHub Actions ─ 카카오 로컬 검색 → site/data/restaurants.json ─(WI
 
 ```
 site/data/menus.json        메뉴 카탈로그 + 중심 좌표·반경. 수집기와 사이트가 같이 읽는다
-scripts/collect.py          수집   카카오 로컬 키워드 검색 → site/data/restaurants.json
+scripts/collect.py          수집   카카오 로컬 키워드 검색 + 이미지 검색(대표 사진) → site/data/restaurants.json
 scripts/test_collect.py     검증   응답 변환·반경 필터·중복 제거
 site/game.js                도메인 순수 함수(토너먼트·룰렛 각도). DOM·fetch 없음
-scripts/test_game.mjs       검증   브래킷 진행·룰렛 정지 위치
+scripts/test_game.mjs       검증   브래킷 진행·사진 룰렛 정지 위치
 site/app.js                 표현   game.js 결과와 JSON을 그리기만 함
 ```
 
 * **수집 ↔ 사이트**: `restaurants.json` 이 유일한 접점. 카카오 응답 스키마는 `collect.py` 의 `slim()` 에서
-  `{name, category, address, lat, lng, distance, url}` 로 좁혀지고 바깥으로 새지 않는다.
+  `{id, name, category, address, lat, lng, distance, url, photo, photoSource}` 로 좁혀지고 바깥으로 새지 않는다.
   나중에 다른 지도 API로 바꿔도 `slim()` 과 `search()` 만 고치면 된다.
 * **도메인 ↔ 표현**: `game.js` 는 브라우저와 node 테스트에서 같은 코드로 돈다.
 * 식당이 0곳인 메뉴는 게임에 올리지 않는다. 월드컵 크기는 종목의 메뉴 수로 제한된다.

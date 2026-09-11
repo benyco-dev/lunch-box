@@ -1,0 +1,1459 @@
+{
+ "center": {
+  "name": "메가존산학연혁신센터",
+  "lat": 37.4174009,
+  "lng": 126.9775157
+ },
+ "radius": 500,
+ "updated": "2026-09-11",
+ "restaurants": {
+  "1849314617": {
+   "id": "1849314617",
+   "name": "고옴탱",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.41794108202667,
+   "lng": 126.97517569614523,
+   "distance": 215,
+   "url": "https://place.map.kakao.com/1849314617",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/EPYxyBLGEXn",
+   "photoSource": "http://blog.naver.com/kyr1669/223493475194"
+  },
+  "771255699": {
+   "id": "771255699",
+   "name": "서울현방 과천점",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7나길 9",
+   "lat": 37.41526560703543,
+   "lng": 126.97795544672545,
+   "distance": 239,
+   "url": "https://place.map.kakao.com/771255699",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/DL9pOdDPFkp",
+   "photoSource": "http://blog.naver.com/parkji1207_/223805875086"
+  },
+  "455270970": {
+   "id": "455270970",
+   "name": "경이로운금돈",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7길 46",
+   "lat": 37.415187096135,
+   "lng": 126.977309327222,
+   "distance": 246,
+   "url": "https://place.map.kakao.com/455270970",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/Koeu09MDJch",
+   "photoSource": "http://blog.naver.com/rhaxkdrkfql/224389283710"
+  },
+  "1466274848": {
+   "id": "1466274848",
+   "name": "얌샘김밥 과천크리에이션타워점",
+   "category": "분식 > 얌샘김밥",
+   "address": "경기 과천시 과천대로7길 46",
+   "lat": 37.41518709613495,
+   "lng": 126.97730932722244,
+   "distance": 246,
+   "url": "https://place.map.kakao.com/1466274848",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/Aa4z7ltFo5B",
+   "photoSource": "http://blog.naver.com/j7708/223845926721"
+  },
+  "2146830066": {
+   "id": "2146830066",
+   "name": "한양 과천본점",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.414815309731246,
+   "lng": 126.97912472939012,
+   "distance": 320,
+   "url": "https://place.map.kakao.com/2146830066",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/DJGo5sbNPIr",
+   "photoSource": "http://blog.naver.com/sbe03201/223451906209"
+  },
+  "1453656313": {
+   "id": "1453656313",
+   "name": "본도시락 과천지식정보타운점",
+   "category": "도시락 > 본도시락",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.4147594944999,
+   "lng": 126.979398111313,
+   "distance": 336,
+   "url": "https://place.map.kakao.com/1453656313",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/1N55F5NcLAB",
+   "photoSource": "http://blog.naver.com/ilys1114/223532631045"
+  },
+  "1922168267": {
+   "id": "1922168267",
+   "name": "삼등집",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1922168267",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/LxXymHIK7RU",
+   "photoSource": "http://blog.naver.com/you_chu/224180331845"
+  },
+  "656415943": {
+   "id": "656415943",
+   "name": "정가네",
+   "category": "한식 > 찌개,전골",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/656415943",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/A9rDNWzlKhQ",
+   "photoSource": "http://blog.naver.com/caroline-kim/223705489364"
+  },
+  "631672735": {
+   "id": "631672735",
+   "name": "우아한전",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/631672735",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/4klg3ao7QOL",
+   "photoSource": "http://blog.naver.com/mokkacookie/224224304930"
+  },
+  "578502284": {
+   "id": "578502284",
+   "name": "그집갈비",
+   "category": "한식 > 육류,고기 > 갈비",
+   "address": "경기 과천시 과천대로7마길 5",
+   "lat": 37.41517602922546,
+   "lng": 126.98097268697094,
+   "distance": 393,
+   "url": "https://place.map.kakao.com/578502284",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/4aLMb20wjDX",
+   "photoSource": "https://mungkle920.tistory.com/33"
+  },
+  "1245020509": {
+   "id": "1245020509",
+   "name": "우장관",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7길 65",
+   "lat": 37.4166275883402,
+   "lng": 126.976105824553,
+   "distance": 151,
+   "url": "https://place.map.kakao.com/1245020509",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/HgbaKmHhGXq",
+   "photoSource": "http://blog.naver.com/dhgytjr55/221223811854"
+  },
+  "1183888737": {
+   "id": "1183888737",
+   "name": "상월",
+   "category": "일식",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.4146540173347,
+   "lng": 126.979068293565,
+   "distance": 334,
+   "url": "https://place.map.kakao.com/1183888737",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/9eB45Jd5XeT",
+   "photoSource": "http://blog.naver.com/lifekcr1/224368724081"
+  },
+  "875004653": {
+   "id": "875004653",
+   "name": "무래무거",
+   "category": "한식",
+   "address": "경기 과천시 김영철길 19",
+   "lat": 37.4177521665552,
+   "lng": 126.981761666414,
+   "distance": 378,
+   "url": "https://place.map.kakao.com/875004653",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/9oDDq3DbrC",
+   "photoSource": "http://blog.naver.com/magwattig/224207039645"
+  },
+  "1444425976": {
+   "id": "1444425976",
+   "name": "보리촌곤드레",
+   "category": "한식",
+   "address": "경기 과천시 삼현로 53-107",
+   "lat": 37.416580046548575,
+   "lng": 126.9729112157812,
+   "distance": 417,
+   "url": "https://place.map.kakao.com/1444425976",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/IaaDVTTm0o9",
+   "photoSource": "http://blog.naver.com/sagak_sagagi/223480513358"
+  },
+  "2113626462": {
+   "id": "2113626462",
+   "name": "청국장앤스토리",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.41483599769732,
+   "lng": 126.97892478188074,
+   "distance": 310,
+   "url": "https://place.map.kakao.com/2113626462",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/8ZjBsdkySrf",
+   "photoSource": "http://blog.naver.com/sikrrot/223714611205"
+  },
+  "1045213221": {
+   "id": "1045213221",
+   "name": "이태리부대찌개 과천지정타점",
+   "category": "한식 > 찌개,전골",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141575577833,
+   "lng": 126.97907972776,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1045213221",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/KlnrMkbyMIC",
+   "photoSource": "http://blog.naver.com/magwattig/224203489284"
+  },
+  "1542377613": {
+   "id": "1542377613",
+   "name": "행복한순정감자탕",
+   "category": "한식 > 감자탕",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.41415755977329,
+   "lng": 126.97909102380295,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1542377613",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/DrWujE04ylr",
+   "photoSource": "http://blog.naver.com/regina4027/223554614121"
+  },
+  "1525800190": {
+   "id": "1525800190",
+   "name": "한판집",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1525800190",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/JFoJxUehWVX",
+   "photoSource": "http://blog.naver.com/magwattig/224305003894"
+  },
+  "517635864": {
+   "id": "517635864",
+   "name": "본죽&비빔밥cafe 과천정보타운점",
+   "category": "퓨전요리 > 퓨전한식 > 본죽&비빔밥cafe",
+   "address": "경기 과천시 과천대로7길 46",
+   "lat": 37.41524746700975,
+   "lng": 126.97732286445859,
+   "distance": 239,
+   "url": "https://place.map.kakao.com/517635864",
+   "photo": null,
+   "photoSource": null
+  },
+  "98304346": {
+   "id": "98304346",
+   "name": "육대장 과천지식정보타운점",
+   "category": "한식 > 국밥 > 육대장",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.4179959689131,
+   "lng": 126.974819834511,
+   "distance": 247,
+   "url": "https://place.map.kakao.com/98304346",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/54hpE7Nt0xZ",
+   "photoSource": "http://blog.naver.com/lmalma83/223497172554"
+  },
+  "1215753769": {
+   "id": "1215753769",
+   "name": "보돌미역 과천지식정보타운점",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1215753769",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/E66bTh5pqOu",
+   "photoSource": "http://blog.naver.com/ehrud1202_/223907012502"
+  },
+  "1183468159": {
+   "id": "1183468159",
+   "name": "한촌설렁탕 과천지식센터점",
+   "category": "한식 > 설렁탕 > 한촌설렁탕",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.414160262830855,
+   "lng": 126.97909102305158,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1183468159",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/HfEUakbrOaB",
+   "photoSource": "http://blog.naver.com/chupachus/224083609725"
+  },
+  "197955428": {
+   "id": "197955428",
+   "name": "보말진 과천센텀점",
+   "category": "한식 > 국수 > 칼국수 > 보말진",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.41475228595345,
+   "lng": 126.97939585406134,
+   "distance": 337,
+   "url": "https://place.map.kakao.com/197955428",
+   "photo": null,
+   "photoSource": null
+  },
+  "119422792": {
+   "id": "119422792",
+   "name": "삼청당 과천스마트K점",
+   "category": "분식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628392,
+   "lng": 126.979091023051,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/119422792",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/3AtIEx4q2BC",
+   "photoSource": "http://blog.naver.com/regina4027/223291885436"
+  },
+  "2044958084": {
+   "id": "2044958084",
+   "name": "육회왕자연어공주 지정타점",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.41379679666034,
+   "lng": 126.9771696763553,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/2044958084",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/HhYhD4LcnIZ",
+   "photoSource": "http://blog.naver.com/daldal_ggoori/224320008049"
+  },
+  "1558822154": {
+   "id": "1558822154",
+   "name": "바르다김선생 과천지식정보타운점",
+   "category": "분식 > 바르다김선생",
+   "address": "경기 과천시 과천대로7가길 20",
+   "lat": 37.41462635237473,
+   "lng": 126.9806328129981,
+   "distance": 413,
+   "url": "https://place.map.kakao.com/1558822154",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/LqmhygVnyLU",
+   "photoSource": "http://blog.naver.com/carryoncarryon-/223680118003"
+  },
+  "1057368679": {
+   "id": "1057368679",
+   "name": "한상차림코다리명가 본점2호점",
+   "category": "한식 > 해물,생선",
+   "address": "경기 과천시 삼현로 53-87",
+   "lat": 37.4159227919832,
+   "lng": 126.975137954838,
+   "distance": 266,
+   "url": "https://place.map.kakao.com/1057368679",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/5nGaIUJHW64",
+   "photoSource": "http://blog.naver.com/chlrkdm/224356812037"
+  },
+  "2010142908": {
+   "id": "2010142908",
+   "name": "숲속의옹달샘",
+   "category": "한식 > 육류,고기 > 닭요리",
+   "address": "경기 과천시 가일1로 30",
+   "lat": 37.4187869531546,
+   "lng": 126.978857024003,
+   "distance": 194,
+   "url": "https://place.map.kakao.com/2010142908",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/4aneMyRVdAM",
+   "photoSource": "http://blog.naver.com/aigsmile/223107837633"
+  },
+  "1205045490": {
+   "id": "1205045490",
+   "name": "신의주찹쌀순대 과천지식정보타운점",
+   "category": "한식 > 순대 > 신의주찹쌀순대",
+   "address": "경기 과천시 과천대로7길 65",
+   "lat": 37.417011443299984,
+   "lng": 126.97620963014609,
+   "distance": 123,
+   "url": "https://place.map.kakao.com/1205045490",
+   "photo": null,
+   "photoSource": null
+  },
+  "999804273": {
+   "id": "999804273",
+   "name": "가마솥순대국밥 과천지식정보타운점",
+   "category": "한식 > 국밥 > 가마솥순대국밥",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.414157557775,
+   "lng": 126.97907972776,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/999804273",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/1qNHzLQQWdo",
+   "photoSource": "http://blog.naver.com/kyokyoball1004/224365898186"
+  },
+  "81108685": {
+   "id": "81108685",
+   "name": "방일해장국 과천지식정보타운점",
+   "category": "한식 > 해장국",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/81108685",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/C0QMvtuhjQz",
+   "photoSource": "http://blog.naver.com/kyokyoball1004/224343706519"
+  },
+  "647986686": {
+   "id": "647986686",
+   "name": "일품양평해장국 과천디테크점",
+   "category": "한식 > 해장국 > 일품양평해장국",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4137967966603,
+   "lng": 126.977169676355,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/647986686",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/1zdPyvsWm16",
+   "photoSource": "http://blog.naver.com/j7708/223857681478"
+  },
+  "746268207": {
+   "id": "746268207",
+   "name": "곤지암할매소머리국밥",
+   "category": "한식 > 국밥",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.41379679360545,
+   "lng": 126.97715386197164,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/746268207",
+   "photo": null,
+   "photoSource": null
+  },
+  "1398009004": {
+   "id": "1398009004",
+   "name": "효자동 설렁탕 디테크점",
+   "category": "음식점",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4137967966603,
+   "lng": 126.977169676355,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/1398009004",
+   "photo": null,
+   "photoSource": null
+  },
+  "588010536": {
+   "id": "588010536",
+   "name": "복만당 과천지식정보타운점",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7나길 20",
+   "lat": 37.4154964587169,
+   "lng": 126.979003670534,
+   "distance": 248,
+   "url": "https://place.map.kakao.com/588010536",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/44WTGeNj8x3",
+   "photoSource": "http://blog.naver.com/yjlee6145/224403462521"
+  },
+  "1754655979": {
+   "id": "1754655979",
+   "name": "서울정 양평해장 과천점",
+   "category": "한식 > 해장국",
+   "address": "경기 과천시 가일로 15-6",
+   "lat": 37.4161097338267,
+   "lng": 126.982587826879,
+   "distance": 471,
+   "url": "https://place.map.kakao.com/1754655979",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/8RlbvMj716y",
+   "photoSource": "https://jieunchae.tistory.com/7"
+  },
+  "1473729623": {
+   "id": "1473729623",
+   "name": "정통삼계탕",
+   "category": "한식 > 육류,고기 > 닭요리 > 삼계탕",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.417661757950405,
+   "lng": 126.97513625034782,
+   "distance": 212,
+   "url": "https://place.map.kakao.com/1473729623",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/Co4R1CZCJls",
+   "photoSource": "http://blog.naver.com/yjlee6145/223909467049"
+  },
+  "1992922208": {
+   "id": "1992922208",
+   "name": "이화향",
+   "category": "중식 > 중국요리",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1992922208",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/6hEtIRljzHB",
+   "photoSource": "http://blog.naver.com/thememor/223864435131"
+  },
+  "1214628565": {
+   "id": "1214628565",
+   "name": "솥삼조",
+   "category": "한식 > 육류,고기",
+   "address": "경기 과천시 과천대로7마길 3",
+   "lat": 37.4150715035529,
+   "lng": 126.980926399072,
+   "distance": 397,
+   "url": "https://place.map.kakao.com/1214628565",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/5YFCDylnic3",
+   "photoSource": "http://blog.naver.com/50-2ndchance/223864279898"
+  },
+  "1512113063": {
+   "id": "1512113063",
+   "name": "등촌샤브칼국수 과천지식정보타운점",
+   "category": "샤브샤브 > 등촌샤브칼국수",
+   "address": "경기 과천시 과천대로7나길 37",
+   "lat": 37.4165711233935,
+   "lng": 126.977635375813,
+   "distance": 92,
+   "url": "https://place.map.kakao.com/1512113063",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/GbuQZJufkJ4",
+   "photoSource": "http://blog.naver.com/freely_yy/224022637235"
+  },
+  "979054325": {
+   "id": "979054325",
+   "name": "한칼",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.41423681130892,
+   "lng": 126.97887637672645,
+   "distance": 370,
+   "url": "https://place.map.kakao.com/979054325",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/Ege3DCg04ZS",
+   "photoSource": "http://blog.naver.com/magwattig/223748214588"
+  },
+  "121300616": {
+   "id": "121300616",
+   "name": "옥된장 과천점",
+   "category": "한식 > 찌개,전골 > 옥된장",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141575577833,
+   "lng": 126.97907972776,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/121300616",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/5KXxeMWbwD0",
+   "photoSource": "http://blog.naver.com/khs3723/223448512410"
+  },
+  "2043880216": {
+   "id": "2043880216",
+   "name": "밥플러스 과천스마트케이점",
+   "category": "구내식당 > 밥플러스",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4142629202307,
+   "lng": 126.978761149592,
+   "distance": 365,
+   "url": "https://place.map.kakao.com/2043880216",
+   "photo": null,
+   "photoSource": null
+  },
+  "1451077465": {
+   "id": "1451077465",
+   "name": "오몽",
+   "category": "한식",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.4147594944999,
+   "lng": 126.979398111313,
+   "distance": 336,
+   "url": "https://place.map.kakao.com/1451077465",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/4fOapFsSV9m",
+   "photoSource": "http://blog.naver.com/hhh_____/223652785374"
+  },
+  "1195013491": {
+   "id": "1195013491",
+   "name": "고불짬뽕",
+   "category": "중식 > 중국요리",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.4178527546248,
+   "lng": 126.975044684761,
+   "distance": 224,
+   "url": "https://place.map.kakao.com/1195013491",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/Jn0kDDEs7tq",
+   "photoSource": "http://blog.naver.com/apexism/224267499590"
+  },
+  "1989418738": {
+   "id": "1989418738",
+   "name": "화이루",
+   "category": "중식 > 중국요리",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4137967966603,
+   "lng": 126.977169676355,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/1989418738",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/8ExAhwPaZVT",
+   "photoSource": "http://blog.naver.com/hobbiology/223846964086"
+  },
+  "996146203": {
+   "id": "996146203",
+   "name": "마라공방 과천점",
+   "category": "중식 > 중국요리",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.41462624801178,
+   "lng": 126.98000587872006,
+   "distance": 378,
+   "url": "https://place.map.kakao.com/996146203",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/AODVORUWtOa",
+   "photoSource": "http://blog.naver.com/honasss/223706864356"
+  },
+  "1369256442": {
+   "id": "1369256442",
+   "name": "깡우동 과천지식정보타운점",
+   "category": "일식 > 돈까스,우동 > 깡우동",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1369256442",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/FK4i2aLHHGI",
+   "photoSource": "http://blog.naver.com/j7708/223996318918"
+  },
+  "1716830072": {
+   "id": "1716830072",
+   "name": "오븐마루치킨 과천상상자이점",
+   "category": "치킨 > 오븐마루치킨",
+   "address": "경기 과천시 과천대로7길 65",
+   "lat": 37.4165842442338,
+   "lng": 126.97563929669,
+   "distance": 189,
+   "url": "https://place.map.kakao.com/1716830072",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/ICqTFqTHJXZ",
+   "photoSource": "http://blog.naver.com/starcurve/223269135070"
+  },
+  "1386138287": {
+   "id": "1386138287",
+   "name": "하루엔소쿠 과천어반허브점",
+   "category": "일식 > 돈까스,우동 > 하루엔소쿠",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.4178527546248,
+   "lng": 126.975044684761,
+   "distance": 224,
+   "url": "https://place.map.kakao.com/1386138287",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/JNtx7Px9lpE",
+   "photoSource": "http://blog.naver.com/haru_ensoku/223417102248"
+  },
+  "1506437012": {
+   "id": "1506437012",
+   "name": "꾸아 과천디테크점",
+   "category": "아시아음식 > 동남아음식 > 베트남음식",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4139301677528,
+   "lng": 126.977274688759,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1506437012",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/8WSuylk11EN",
+   "photoSource": "http://blog.naver.com/ssonghy821/224240415409"
+  },
+  "656239883": {
+   "id": "656239883",
+   "name": "반포식스 과천지식정보타운점",
+   "category": "아시아음식 > 동남아음식 > 베트남음식",
+   "address": "경기 과천시 과천대로7가길 20",
+   "lat": 37.414621847279115,
+   "lng": 126.98063281415807,
+   "distance": 413,
+   "url": "https://place.map.kakao.com/656239883",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/7XUo554GfM7",
+   "photoSource": "http://blog.naver.com/minalswl0926/223493236510"
+  },
+  "706098422": {
+   "id": "706098422",
+   "name": "애슐리퀸즈 과천점",
+   "category": "패밀리레스토랑 > 애슐리",
+   "address": "경기 과천시 과천대로7가길 20",
+   "lat": 37.41438761268767,
+   "lng": 126.98081925975137,
+   "distance": 444,
+   "url": "https://place.map.kakao.com/706098422",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/6L7LMxamz9b",
+   "photoSource": "http://blog.naver.com/ourssuk-log/224258796014"
+  },
+  "1249721257": {
+   "id": "1249721257",
+   "name": "미분당 과천점",
+   "category": "아시아음식 > 동남아음식 > 베트남음식 > 미분당",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.417359975760036,
+   "lng": 126.97541876321495,
+   "distance": 185,
+   "url": "https://place.map.kakao.com/1249721257",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/HrGd7veNons",
+   "photoSource": "http://blog.naver.com/ks11vs/223592627932"
+  },
+  "539851439": {
+   "id": "539851439",
+   "name": "오초 오늘의초밥 과천점",
+   "category": "일식 > 초밥,롤",
+   "address": "경기 과천시 과천대로7길 46",
+   "lat": 37.415187096135,
+   "lng": 126.977309327222,
+   "distance": 246,
+   "url": "https://place.map.kakao.com/539851439",
+   "photo": "https://search2.kakaocdn.net/argon/130x130_85_c/6ESxNqBTpay",
+   "photoSource": "http://blog.naver.com/lovely_young1004/224344830327"
+  },
+  "755865181": {
+   "id": "755865181",
+   "name": "노렌인 과천본점",
+   "category": "일식 > 초밥,롤",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.41415755777499,
+   "lng": 126.97907972776031,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/755865181",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/J7PyuVDdmiU",
+   "photoSource": "http://blog.naver.com/souldg/223748156003"
+  },
+  "242843958": {
+   "id": "242843958",
+   "name": "잔잔회",
+   "category": "한식 > 해물,생선 > 회",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.41379679469672,
+   "lng": 126.97715950996582,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/242843958",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/4SkMHlkwqtb",
+   "photoSource": "http://blog.naver.com/j7708/223954923948"
+  },
+  "1667397301": {
+   "id": "1667397301",
+   "name": "만춘",
+   "category": "일식 > 돈까스,우동",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.41471434742089,
+   "lng": 126.97885365036662,
+   "distance": 320,
+   "url": "https://place.map.kakao.com/1667397301",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/3XgnCCaWDvK",
+   "photoSource": "http://blog.naver.com/charmsae_day/223641740436"
+  },
+  "648952404": {
+   "id": "648952404",
+   "name": "호레타식당 과천지식정보타운 본점",
+   "category": "일식",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.4147522859534,
+   "lng": 126.979395854061,
+   "distance": 337,
+   "url": "https://place.map.kakao.com/648952404",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/7ugg5vkmBwU",
+   "photoSource": "http://blog.naver.com/butterfly_910/224059163317"
+  },
+  "1589062525": {
+   "id": "1589062525",
+   "name": "스마트경양식",
+   "category": "양식",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4139301677528,
+   "lng": 126.977274688759,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1589062525",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/2yetGyyhRxV",
+   "photoSource": "https://error.kkmong.com/112"
+  },
+  "922341609": {
+   "id": "922341609",
+   "name": "온센 과천점",
+   "category": "일식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/922341609",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/7lZpoPmtWZR",
+   "photoSource": "http://blog.naver.com/revvievv/224228681638"
+  },
+  "1219414302": {
+   "id": "1219414302",
+   "name": "오레노카츠 과천정보타운점",
+   "category": "일식 > 돈까스,우동",
+   "address": "경기 과천시 과천대로7가길 20",
+   "lat": 37.41458130419287,
+   "lng": 126.98064976875733,
+   "distance": 418,
+   "url": "https://place.map.kakao.com/1219414302",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/JthVajZUIaQ",
+   "photoSource": "http://blog.naver.com/fan13002/223703040051"
+  },
+  "1440332543": {
+   "id": "1440332543",
+   "name": "호레타반식당 과천지식정보타운본점",
+   "category": "일식",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.41475949449993,
+   "lng": 126.97939811131346,
+   "distance": 336,
+   "url": "https://place.map.kakao.com/1440332543",
+   "photo": null,
+   "photoSource": null
+  },
+  "56811770": {
+   "id": "56811770",
+   "name": "야키토리동작 과천지식정보타운점",
+   "category": "술집 > 일본식주점 > 야키토리동작",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/56811770",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/5DZsNbWJDmV",
+   "photoSource": "http://blog.naver.com/lovely_young1004/224351051322"
+  },
+  "2071671460": {
+   "id": "2071671460",
+   "name": "양산도 과천점",
+   "category": "한식 > 해물,생선 > 장어",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.41394589147991,
+   "lng": 126.97949773905118,
+   "distance": 421,
+   "url": "https://place.map.kakao.com/2071671460",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/76RE6NRl16J",
+   "photoSource": "http://blog.naver.com/green3575/223560558482"
+  },
+  "1057035803": {
+   "id": "1057035803",
+   "name": "못난이대구탕",
+   "category": "한식 > 해물,생선",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628309,
+   "lng": 126.979091023052,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1057035803",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/HZLUW0OoQlN",
+   "photoSource": "http://blog.naver.com/magwattig/224240011827"
+  },
+  "1793247297": {
+   "id": "1793247297",
+   "name": "이탈리안 레스토랑 더호",
+   "category": "양식 > 이탈리안",
+   "address": "경기 과천시 과천대로7나길 48",
+   "lat": 37.41761695731,
+   "lng": 126.976356293928,
+   "distance": 105,
+   "url": "https://place.map.kakao.com/1793247297",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/L1vi0MFjEA",
+   "photoSource": "http://blog.naver.com/1404joy/223908397169"
+  },
+  "743048149": {
+   "id": "743048149",
+   "name": "샐러디 과천지식정보타운점",
+   "category": "샐러드 > 샐러디",
+   "address": "경기 과천시 과천대로7길 26",
+   "lat": 37.41481359402798,
+   "lng": 126.97961950087348,
+   "distance": 342,
+   "url": "https://place.map.kakao.com/743048149",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/818mFmTiaDI",
+   "photoSource": "http://blog.naver.com/kevin12yr/223434531629"
+  },
+  "933573223": {
+   "id": "933573223",
+   "name": "반올림피자 경기과천점",
+   "category": "양식 > 피자 > 반올림피자",
+   "address": "경기 과천시 과천대로7마길 34",
+   "lat": 37.4162528744634,
+   "lng": 126.981782363421,
+   "distance": 398,
+   "url": "https://place.map.kakao.com/933573223",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/KMAUTjONBhQ",
+   "photoSource": "http://blog.naver.com/doy_03/224341935891"
+  },
+  "826622215": {
+   "id": "826622215",
+   "name": "더블타코 과천디테크타워점",
+   "category": "양식",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4134525345211,
+   "lng": 126.976795885318,
+   "distance": 442,
+   "url": "https://place.map.kakao.com/826622215",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/L4UFZTIWpuE",
+   "photoSource": "http://blog.naver.com/dkaldkal222/223670361657"
+  },
+  "1778846339": {
+   "id": "1778846339",
+   "name": "루스터버거앤치킨 과천스마트케이점",
+   "category": "양식 > 햄버거",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628392,
+   "lng": 126.97909102305144,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1778846339",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/1tUgAMrWn5k",
+   "photoSource": "http://blog.naver.com/maylily512/223336856798"
+  },
+  "498539114": {
+   "id": "498539114",
+   "name": "스마트델리",
+   "category": "분식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.4141602628392,
+   "lng": 126.979091023051,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/498539114",
+   "photo": null,
+   "photoSource": null
+  },
+  "1240820277": {
+   "id": "1240820277",
+   "name": "도토리김밥",
+   "category": "분식",
+   "address": "경기 과천시 과천대로7길 20",
+   "lat": 37.41399996104618,
+   "lng": 126.97954629719783,
+   "distance": 417,
+   "url": "https://place.map.kakao.com/1240820277",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/J7AtvhJzWa3",
+   "photoSource": "http://blog.naver.com/sum2_/223422162609"
+  },
+  "1574491645": {
+   "id": "1574491645",
+   "name": "파리바게뜨 과천지식정보점",
+   "category": "간식 > 제과,베이커리 > 파리바게뜨",
+   "address": "경기 과천시 과천대로7가길 20",
+   "lat": 37.414338003965184,
+   "lng": 126.98049733439733,
+   "distance": 430,
+   "url": "https://place.map.kakao.com/1574491645",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/K6MRa0F3twb",
+   "photoSource": "http://blog.naver.com/kdm44/223488593829"
+  },
+  "1448144722": {
+   "id": "1448144722",
+   "name": "뉴욕버거 과천지식정보타운점",
+   "category": "양식 > 햄버거 > 뉴욕버거",
+   "address": "경기 과천시 과천대로7나길 48",
+   "lat": 37.417544807556084,
+   "lng": 126.9760174200538,
+   "distance": 133,
+   "url": "https://place.map.kakao.com/1448144722",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/9FT3uxKyjg8",
+   "photoSource": "http://blog.naver.com/j7708/224002904014"
+  },
+  "1575273762": {
+   "id": "1575273762",
+   "name": "프랭크버거 갈현점",
+   "category": "양식 > 햄버거 > 프랭크버거",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.4139301677528,
+   "lng": 126.977274688759,
+   "distance": 385,
+   "url": "https://place.map.kakao.com/1575273762",
+   "photo": "https://search1.kakaocdn.net/argon/130x130_85_c/B0BcV8PDuk4",
+   "photoSource": "http://blog.naver.com/j7708/223979520641"
+  },
+  "963067451": {
+   "id": "963067451",
+   "name": "슬로우캘리 과천지식정보타운점",
+   "category": "샐러드 > 슬로우캘리",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.4178527546165,
+   "lng": 126.975044684762,
+   "distance": 224,
+   "url": "https://place.map.kakao.com/963067451",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/HdcMUg7x2b1",
+   "photoSource": "http://blog.naver.com/tetsu06/223681930074"
+  },
+  "990921725": {
+   "id": "990921725",
+   "name": "823포케&타르트",
+   "category": "샐러드",
+   "address": "경기 과천시 과천대로7길 33",
+   "lat": 37.41379679666034,
+   "lng": 126.9771696763553,
+   "distance": 400,
+   "url": "https://place.map.kakao.com/990921725",
+   "photo": "https://search4.kakaocdn.net/argon/130x130_85_c/Hr4bkgjzoVL",
+   "photoSource": "http://blog.naver.com/h__lee0131/223993723783"
+  },
+  "58109809": {
+   "id": "58109809",
+   "name": "호화온도 어반허브점",
+   "category": "간식 > 제과,베이커리",
+   "address": "경기 과천시 과천대로7나길 60",
+   "lat": 37.4178527546165,
+   "lng": 126.975044684762,
+   "distance": 224,
+   "url": "https://place.map.kakao.com/58109809",
+   "photo": "https://search3.kakaocdn.net/argon/130x130_85_c/CUEMF8ImSqL",
+   "photoSource": "http://blog.naver.com/yjlee6145/223963160167"
+  }
+ },
+ "menus": {
+  "김치찌개": [
+   "1849314617",
+   "771255699",
+   "455270970",
+   "1466274848",
+   "2146830066",
+   "1453656313",
+   "1922168267",
+   "656415943",
+   "631672735",
+   "578502284"
+  ],
+  "된장찌개": [
+   "1245020509",
+   "1849314617",
+   "771255699",
+   "455270970",
+   "1466274848",
+   "2146830066",
+   "1183888737",
+   "1453656313",
+   "875004653",
+   "1922168267",
+   "578502284",
+   "1444425976"
+  ],
+  "순두부찌개": [
+   "1466274848",
+   "2113626462",
+   "2146830066"
+  ],
+  "부대찌개": [
+   "1466274848",
+   "1045213221",
+   "1542377613",
+   "656415943",
+   "1525800190"
+  ],
+  "청국장": [
+   "2113626462"
+  ],
+  "제육볶음": [
+   "517635864",
+   "455270970",
+   "1466274848",
+   "2113626462",
+   "1922168267",
+   "656415943"
+  ],
+  "불고기": [
+   "517635864",
+   "98304346",
+   "1453656313",
+   "875004653",
+   "1922168267",
+   "1215753769",
+   "1183468159"
+  ],
+  "비빔밥": [
+   "1245020509",
+   "517635864",
+   "2146830066",
+   "197955428",
+   "1542377613",
+   "119422792",
+   "1215753769",
+   "2044958084",
+   "1558822154"
+  ],
+  "백반": [
+   "1057368679",
+   "1453656313"
+  ],
+  "한정식": [
+   "2010142908",
+   "1453656313",
+   "1444425976"
+  ],
+  "쌈밥": [
+   "1453656313"
+  ],
+  "국밥": [
+   "1205045490",
+   "1245020509",
+   "98304346",
+   "999804273",
+   "1922168267",
+   "81108685",
+   "647986686",
+   "746268207"
+  ],
+  "순대국": [
+   "1205045490",
+   "999804273",
+   "647986686"
+  ],
+  "콩나물국밥": [],
+  "설렁탕": [
+   "1205045490",
+   "1849314617",
+   "98304346",
+   "1183468159",
+   "1398009004"
+  ],
+  "곰탕": [
+   "1205045490",
+   "588010536",
+   "1183468159",
+   "1754655979"
+  ],
+  "갈비탕": [
+   "1245020509",
+   "771255699",
+   "647986686"
+  ],
+  "감자탕": [
+   "1542377613"
+  ],
+  "해장국": [
+   "1205045490",
+   "1542377613",
+   "81108685",
+   "647986686",
+   "1754655979"
+  ],
+  "육개장": [
+   "1849314617",
+   "1466274848",
+   "98304346",
+   "647986686"
+  ],
+  "삼계탕": [
+   "1473729623",
+   "875004653",
+   "1922168267"
+  ],
+  "추어탕": [],
+  "냉면": [
+   "1205045490",
+   "1466274848",
+   "98304346",
+   "1992922208",
+   "1922168267",
+   "578502284",
+   "1214628565"
+  ],
+  "막국수": [
+   "1542377613",
+   "1558822154"
+  ],
+  "칼국수": [
+   "1512113063",
+   "1466274848",
+   "197955428",
+   "979054325",
+   "121300616",
+   "1214628565",
+   "1558822154"
+  ],
+  "수제비": [],
+  "보쌈": [
+   "455270970",
+   "98304346",
+   "1453656313",
+   "2043880216",
+   "979054325"
+  ],
+  "족발": [
+   "455270970"
+  ],
+  "닭갈비": [],
+  "닭볶음탕": [
+   "2010142908",
+   "1473729623",
+   "656415943",
+   "631672735"
+  ],
+  "찜닭": [],
+  "삼겹살": [
+   "771255699",
+   "455270970",
+   "2146830066",
+   "1451077465",
+   "1922168267",
+   "656415943",
+   "1525800190",
+   "578502284",
+   "1214628565",
+   "1444425976"
+  ],
+  "갈비": [
+   "771255699",
+   "1057368679",
+   "2146830066",
+   "1453656313",
+   "578502284",
+   "1444425976"
+  ],
+  "생선구이": [
+   "1057368679",
+   "2113626462",
+   "875004653"
+  ],
+  "코다리": [
+   "1057368679",
+   "1453656313",
+   "1215753769"
+  ],
+  "낙지볶음": [],
+  "오징어볶음": [
+   "121300616",
+   "999804273"
+  ],
+  "짜장면": [
+   "1195013491",
+   "1992922208",
+   "1989418738"
+  ],
+  "짬뽕": [
+   "1195013491",
+   "996146203",
+   "1992922208",
+   "1989418738"
+  ],
+  "탕수육": [
+   "1195013491",
+   "996146203",
+   "1045213221",
+   "1992922208",
+   "1369256442",
+   "1989418738"
+  ],
+  "볶음밥": [
+   "1512113063",
+   "1716830072",
+   "1195013491",
+   "1386138287",
+   "1453656313",
+   "996146203",
+   "1506437012",
+   "1992922208",
+   "1989418738",
+   "656239883",
+   "706098422"
+  ],
+  "마라탕": [
+   "996146203"
+  ],
+  "마라샹궈": [
+   "996146203",
+   "1989418738"
+  ],
+  "양꼬치": [],
+  "딤섬": [
+   "1249721257"
+  ],
+  "우육면": [
+   "1989418738"
+  ],
+  "훠궈": [],
+  "초밥": [
+   "539851439",
+   "1183888737",
+   "755865181",
+   "2044958084",
+   "242843958",
+   "706098422"
+  ],
+  "돈카츠": [
+   "1386138287",
+   "1466274848",
+   "1667397301",
+   "1453656313",
+   "648952404",
+   "755865181",
+   "1045213221",
+   "1589062525",
+   "1542377613",
+   "922341609",
+   "1369256442",
+   "1219414302"
+  ],
+  "라멘": [
+   "1386138287",
+   "1667397301",
+   "1992922208"
+  ],
+  "우동": [
+   "1386138287",
+   "539851439",
+   "1466274848",
+   "1667397301",
+   "1440332543",
+   "1451077465",
+   "648952404",
+   "755865181",
+   "922341609",
+   "119422792",
+   "1369256442",
+   "242843958",
+   "1558822154",
+   "1219414302",
+   "706098422"
+  ],
+  "소바": [
+   "1386138287",
+   "1466274848",
+   "1667397301",
+   "755865181",
+   "922341609",
+   "119422792",
+   "56811770",
+   "1219414302"
+  ],
+  "규동": [],
+  "가츠동": [],
+  "텐동": [
+   "922341609"
+  ],
+  "사케동": [
+   "539851439",
+   "755865181",
+   "2044958084",
+   "2071671460"
+  ],
+  "회덮밥": [
+   "539851439",
+   "1057035803",
+   "242843958"
+  ],
+  "일본카레": [],
+  "오코노미야키": [],
+  "파스타": [
+   "1793247297",
+   "743048149",
+   "1589062525",
+   "933573223",
+   "826622215",
+   "706098422"
+  ],
+  "피자": [
+   "1793247297",
+   "933573223",
+   "826622215",
+   "706098422"
+  ],
+  "스테이크": [
+   "1793247297",
+   "1386138287",
+   "999804273",
+   "1589062525",
+   "1183468159",
+   "826622215",
+   "706098422"
+  ],
+  "리조또": [
+   "1793247297",
+   "578502284",
+   "826622215",
+   "706098422"
+  ],
+  "수제버거": [
+   "1778846339"
+  ],
+  "브런치": [],
+  "필라프": [],
+  "그라탕": [],
+  "떡볶이": [
+   "1849314617",
+   "1466274848",
+   "119422792",
+   "498539114",
+   "2044958084",
+   "1558822154",
+   "1240820277",
+   "706098422"
+  ],
+  "김밥": [
+   "1466274848",
+   "1453656313",
+   "197955428",
+   "119422792",
+   "1558822154",
+   "1240820277",
+   "706098422"
+  ],
+  "라볶이": [
+   "1466274848"
+  ],
+  "만두": [
+   "1205045490",
+   "517635864",
+   "1466274848",
+   "98304346",
+   "588010536",
+   "197955428",
+   "1183468159",
+   "1369256442",
+   "1989418738",
+   "647986686",
+   "1558822154",
+   "2071671460",
+   "706098422"
+  ],
+  "쫄면": [
+   "1466274848",
+   "706098422"
+  ],
+  "순대": [
+   "1205045490",
+   "999804273",
+   "1240820277"
+  ],
+  "라면": [
+   "1466274848",
+   "119422792",
+   "2044958084",
+   "1240820277"
+  ],
+  "토스트": [
+   "1574491645"
+  ],
+  "쌀국수": [
+   "1249721257",
+   "1506437012",
+   "656239883",
+   "706098422"
+  ],
+  "분짜": [
+   "1506437012",
+   "656239883"
+  ],
+  "반미": [
+   "656239883"
+  ],
+  "팟타이": [
+   "656239883"
+  ],
+  "인도커리": [],
+  "나시고렝": [
+   "656239883",
+   "706098422"
+  ],
+  "똠얌꿍": [],
+  "부리또": [],
+  "타코": [
+   "826622215"
+  ],
+  "햄버거": [
+   "1448144722",
+   "1575273762",
+   "1778846339",
+   "1574491645"
+  ],
+  "치킨": [
+   "1448144722",
+   "1716830072",
+   "1045213221",
+   "1575273762",
+   "1778846339",
+   "56811770",
+   "933573223",
+   "656239883",
+   "706098422"
+  ],
+  "샐러드": [
+   "1793247297",
+   "1716830072",
+   "963067451",
+   "1453656313",
+   "743048149",
+   "1589062525",
+   "990921725",
+   "2044958084",
+   "656239883",
+   "1574491645",
+   "826622215",
+   "706098422"
+  ],
+  "포케": [
+   "963067451",
+   "743048149",
+   "990921725"
+  ],
+  "샌드위치": [
+   "58109809",
+   "990921725",
+   "1574491645"
+  ],
+  "도시락": [
+   "1453656313"
+  ],
+  "죽": [
+   "517635864",
+   "1558822154",
+   "706098422"
+  ],
+  "주먹밥": []
+ }
+}

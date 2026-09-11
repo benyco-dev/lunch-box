@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { sizesFor, startBracket, pick, champion, roundName, sliceAt, spinTo } from "../site/game.js";
+import { sizesFor, startBracket, pick, champion, roundName, hopPath, hopDelay } from "../site/game.js";
 
 const menus = Array.from({ length: 20 }, (_, i) => `메뉴${i}`);
 
@@ -22,15 +22,16 @@ for (const size of [8, 16]) {
   assert.ok(menus.includes(champion(b)));
 }
 
-for (const n of [2, 7, 12]) {
-  let rot = 0;
-  for (let k = 0; k < n; k++) {
-    for (const jitter of [-0.49, 0, 0.49]) {
-      const next = spinTo(rot, k, n, { jitter });
-      assert.ok(next - rot >= 5 * 360, "최소 5바퀴");
-      assert.equal(sliceAt(next, n), k, `n=${n} k=${k} jitter=${jitter}`);
-      rot = next;
+for (const n of [1, 2, 7, 12]) {
+  for (let start = 0; start < n; start++) {
+    for (let k = 0; k < n; k++) {
+      const path = hopPath(n, start, k);
+      assert.equal(path[0], start);
+      assert.equal(path.at(-1), k, `n=${n} start=${start} k=${k}`);
+      assert.ok(path.length - 1 >= 24, "최소 24칸");
+      path.slice(1).forEach((p, i) => assert.equal(p, (path[i] + 1) % n, "한 칸씩 이동"));
     }
   }
 }
+assert.ok(hopDelay(0, 30) < hopDelay(29, 30), "끝으로 갈수록 느려짐");
 console.log("ok");

@@ -1,5 +1,5 @@
 // 표현만. 규칙은 game.js, 데이터는 data/*.json 이 가진다.
-import { shuffle, sizesFor, startBracket, pick, champion, roundName, sliceAt, spinTo } from "./game.js";
+import { shuffle, sizesFor, startBracket, pick, champion, roundName, hopPath, hopDelay } from "./game.js";
 
 const $ = (s) => document.querySelector(s);
 const h = (tag, props = {}, ...kids) => {
@@ -11,22 +11,23 @@ const getJSON = (p) => fetch(p).then((r) => (r.ok ? r.json() : null), () => null
 
 const [cfg, data] = await Promise.all([getJSON("data/menus.json"), getJSON("data/restaurants.json")]);
 
-const places = data?.menus ?? {};
-const hasData = Object.keys(places).length > 0;
+const shops = data?.restaurants ?? {};
+const hasData = Object.keys(shops).length > 0;
+const placesOf = (menu) => (data?.menus[menu] ?? []).map((id) => shops[id]);
 // 수집 데이터가 있으면 근처에 식당이 있는 메뉴만 게임에 올린다
 const categories = Object.fromEntries(
   Object.entries(cfg.categories)
-    .map(([c, ms]) => [c, hasData ? ms.filter((m) => places[m]?.length) : ms])
+    .map(([c, ms]) => [c, hasData ? ms.filter((m) => placesOf(m).length) : ms])
     .filter(([, ms]) => ms.length),
 );
 const categoryOf = Object.fromEntries(Object.entries(categories).flatMap(([c, ms]) => ms.map((m) => [m, c])));
 const all = Object.keys(categoryOf);
 let category = "전체";
 const pool = () => (category === "전체" ? all : categories[category]);
+const shopPool = () => [...new Set(pool().flatMap(placesOf))];
 
-const shopCount = new Set(Object.values(places).flat().map((r) => r.name + r.address)).size;
 $("#status").textContent = hasData
-  ? `${cfg.center.name} 반경 ${cfg.radius}m · 식당 ${shopCount}곳 · ${data.updated} 갱신`
+  ? `${cfg.center.name} 반경 ${cfg.radius}m · 식당 ${Object.keys(shops).length}곳 · ${data.updated} 갱신`
   : `${cfg.center.name} 반경 ${cfg.radius}m · 식당 데이터 수집 전`;
 
 // ---- 탭 · 종목 ----
@@ -49,7 +50,7 @@ function renderChips() {
         onclick: () => {
           category = c;
           renderChips();
-          drawWheel();
+          drawGrid();
           bracket = null;
           renderWorldcup();
         },
@@ -58,57 +59,51 @@ function renderChips() {
   );
 }
 
-// ---- 룰렛 ----
-const wheel = $("#wheel");
-const WHEEL_MAX = 12; // 조각이 더 많으면 글자가 안 읽힌다. 섞기로 다른 12개를 올린다
-let slices = [];
-let rotation = 0;
+// ---- 사진 룰렛 ----
+const GRID_MAX = 12; // 한 화면에 12곳. 섞기로 다른 식당을 올린다
+const grid = $("#grid");
+let onGrid = [];
+let at = 0;
 let spinning = false;
 
-function drawWheel() {
+const photo = (shop, className) =>
+  shop.photo ? h("img", { className, src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "";
+
+function drawGrid() {
   if (spinning) return;
-  slices = shuffle(pool()).slice(0, WHEEL_MAX);
-  const ctx = wheel.getContext("2d");
-  const n = slices.length, r = wheel.width / 2;
-  ctx.clearRect(0, 0, wheel.width, wheel.height);
-  slices.forEach((menu, k) => {
-    const a0 = (k / n) * 2 * Math.PI - Math.PI / 2; // 12시부터 시계방향 — game.js 규약
-    const a1 = ((k + 1) / n) * 2 * Math.PI - Math.PI / 2;
-    ctx.beginPath();
-    ctx.moveTo(r, r);
-    ctx.arc(r, r, r - 4, a0, a1);
-    ctx.closePath();
-    ctx.fillStyle = `hsl(${(k * 360) / n} 80% 72%)`;
-    ctx.fill();
-    ctx.save();
-    ctx.translate(r, r);
-    ctx.rotate((a0 + a1) / 2);
-    ctx.fillStyle = "#2b2521";
-    ctx.font = `600 ${n > 8 ? 30 : 36}px system-ui, sans-serif`;
-    ctx.textAlign = "right";
-    ctx.textBaseline = "middle";
-    ctx.fillText(menu, r - 28, 0);
-    ctx.restore();
-  });
+  const all = shopPool();
+  onGrid = shuffle(all).slice(0, GRID_MAX);
+  at = 0;
+  grid.replaceChildren(...onGrid.map((s) => h("figure", { className: "tile" }, photo(s), h("figcaption", { textContent: s.name }))));
+  $("#roulette-hint").textContent = onGrid.length
+    ? `근처 식당 ${all.length}곳 중 ${onGrid.length}곳에서 골라요`
+    : "식당 데이터가 아직 없어요";
+  $("#spin").disabled = !onGrid.length;
 }
 
-const landed = () => {
-  spinning = false;
-  $("#spin").disabled = false;
-  showResult(slices[sliceAt(rotation, slices.length)], "🎯 룰렛이 골랐어요");
-};
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-$("#spin").onclick = () => {
-  if (spinning || !slices.length) return;
+$("#spin").onclick = async () => {
+  if (spinning || !onGrid.length) return;
   spinning = true;
   $("#spin").disabled = true;
-  const k = Math.floor(Math.random() * slices.length);
-  rotation = spinTo(rotation, k, slices.length, { jitter: Math.random() - 0.5 });
-  wheel.style.transform = `rotate(${rotation}deg)`;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) landed(); // transition 없으면 transitionend도 없다
+  grid.classList.add("spinning");
+  const k = Math.floor(Math.random() * onGrid.length);
+  const path = matchMedia("(prefers-reduced-motion: reduce)").matches ? [k] : hopPath(onGrid.length, at, k);
+  for (const [i, idx] of path.entries()) {
+    [...grid.children].forEach((t, j) => t.classList.toggle("on", j === idx));
+    await wait(hopDelay(i, path.length));
+  }
+  at = k;
+  spinning = false;
+  $("#spin").disabled = false;
+  const shop = onGrid[k];
+  showResult("🎯 룰렛이 골랐어요", shop.name, [shop]);
 };
-wheel.addEventListener("transitionend", landed);
-$("#reshuffle").onclick = drawWheel;
+$("#reshuffle").onclick = () => {
+  grid.classList.remove("spinning");
+  drawGrid();
+};
 
 // ---- 월드컵 ----
 let bracket = null;
@@ -116,7 +111,7 @@ let bracket = null;
 const card = (menu) =>
   h("button", { className: "card", onclick: () => { bracket = pick(bracket, menu); renderWorldcup(); } },
     h("strong", { textContent: menu }),
-    h("small", { textContent: [categoryOf[menu], places[menu] && `근처 ${places[menu].length}곳`].filter(Boolean).join(" · ") }),
+    h("small", { textContent: [categoryOf[menu], placesOf(menu).length && `근처 ${placesOf(menu).length}곳`].filter(Boolean).join(" · ") }),
   );
 
 function renderWorldcup() {
@@ -135,7 +130,7 @@ function renderWorldcup() {
   if (win) {
     bracket = null;
     renderWorldcup();
-    showResult(win, "🏆 메뉴 월드컵 우승");
+    showResult("🏆 메뉴 월드컵 우승", win, placesOf(win));
     return;
   }
   const { round, i } = bracket;
@@ -146,20 +141,23 @@ function renderWorldcup() {
 }
 
 // ---- 결과: 식당 목록 + 지도 ----
-function showResult(menu, label) {
-  const list = places[menu] ?? [];
+function showResult(label, title, list) {
   $("#result").hidden = false;
   $("#result-label").textContent = label;
-  $("#result-title").textContent = menu;
+  $("#result-title").textContent = title;
   $("#places").replaceChildren(
     ...(list.length
       ? list.map((r, idx) =>
           h("li", {},
+            photo(r, "thumb"),
             h("button", { className: "place", onclick: () => focusMarker(idx) },
               h("strong", { textContent: r.name }),
               h("span", { textContent: `${r.category} · ${r.distance}m` }),
             ),
-            h("a", { href: r.url, target: "_blank", rel: "noopener", textContent: "카카오맵 ↗" }),
+            h("div", { className: "links" },
+              h("a", { href: r.url, target: "_blank", rel: "noopener", textContent: "카카오맵 ↗" }),
+              r.photoSource ? h("a", { className: "source", href: r.photoSource, target: "_blank", rel: "noopener noreferrer", textContent: "사진 출처" }) : "",
+            ),
           ))
       : [h("li", { textContent: hasData ? "반경 안 식당이 없어요" : "식당 데이터가 아직 없어요" })]),
   );
@@ -196,5 +194,5 @@ function focusMarker(idx) {
 }
 
 renderChips();
-drawWheel();
+drawGrid();
 renderWorldcup();

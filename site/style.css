@@ -40,13 +40,21 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 12px 0; }
 
-.wheel-wrap { position: relative; width: min(80vw, 360px); margin: 0 auto 16px; }
-#wheel { display: block; width: 100%; height: auto; transition: transform 4.5s cubic-bezier(.15, .85, .2, 1); }
-.pointer {
-  position: absolute; top: -6px; left: 50%; transform: translateX(-50%); z-index: 1;
-  border: 14px solid transparent; border-top: 26px solid var(--accent);
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; } /* 12칸이 빈칸 없이 떨어지게 3열/4열 */
+@media (min-width: 560px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+.tile { position: relative; margin: 0; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--line); transition: transform .08s, opacity .08s; }
+.tile::before { content: "🍽️"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 2rem; }
+.tile img { position: relative; width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile figcaption {
+  position: absolute; inset: auto 0 0; padding: 14px 6px 5px; font-size: .75rem; font-weight: 600; color: #fff;
+  background: linear-gradient(transparent, rgb(0 0 0 / .7)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-@media (prefers-reduced-motion: reduce) { #wheel { transition: none; } }
+.grid.spinning .tile { opacity: .45; }
+.grid .tile.on { opacity: 1; transform: scale(1.06); outline: 4px solid var(--accent); z-index: 1; }
+
+.thumb { flex: none; width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: var(--line); }
+.links { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.links .source { color: var(--muted); font-size: .75rem; }
 
 .hint { text-align: center; font-weight: 600; margin: 0 0 12px; }
 .sizes { display: flex; gap: 8px; justify-content: center; }

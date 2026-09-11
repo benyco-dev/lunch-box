@@ -23,17 +23,13 @@ export function pick(b, winner) {
 export const champion = (b) => (b.round.length === 1 ? b.round[0] : null);
 export const roundName = (n) => (n === 2 ? "결승" : `${n}강`);
 
-// ---- 룰렛 ----
-// 조각 k는 12시 방향부터 시계방향으로 [k·s, (k+1)·s) 에 그린다. 포인터는 12시.
-// 휠을 R도 돌리면 12시에 오는 조각은 sliceAt(R).
-export function sliceAt(rotation, n) {
-  const s = 360 / n;
-  return Math.floor((((-rotation % 360) + 360) % 360) / s) % n;
+// ---- 사진 룰렛 ----
+// 하이라이트가 start 칸에서 한 칸씩 이동해 k 칸에 멈추는 경로. 최소 minSteps 칸은 움직인다.
+export function hopPath(n, start, k, minSteps = 24) {
+  const offset = (((k - start) % n) + n) % n;
+  const steps = Math.ceil(Math.max(0, minSteps - offset) / n) * n + offset;
+  return Array.from({ length: steps + 1 }, (_, i) => (start + i) % n);
 }
 
-// 현재 회전값에서 최소 turns 바퀴 더 돌아 조각 k에 멈추는 절대 회전값. jitter ∈ (-0.5, 0.5) 조각 안 위치.
-export function spinTo(current, k, n, { turns = 5, jitter = 0 } = {}) {
-  const s = 360 / n;
-  const base = Math.ceil(current / 360) * 360 + (turns + 1) * 360; // 조각 오프셋(<360)을 빼도 turns 바퀴 보장
-  return base - (k * s + s / 2 + jitter * s * 0.8);
-}
+// i번째 칸에 머무는 시간(ms). 끝으로 갈수록 느려진다.
+export const hopDelay = (i, total) => 40 + 380 * (i / total) ** 3;
