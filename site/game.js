@@ -35,5 +35,20 @@ export function reelStrip(pool, winner, { length = 60, tail = 6, rand = Math.ran
 // 인원이 바뀌어도 이미 고른 것은 앞사람부터 유지한다
 export const resizePicks = (picks, n) => Array.from({ length: n }, (_, i) => picks[i] ?? null);
 
-// 빈 칸만 풀에서 무작위로 채운다
-export const fillEmpty = (picks, pool, rand = Math.random) => picks.map((m) => m ?? pool[Math.floor(rand() * pool.length)]);
+// 이미 고른 것은 빼고 무작위로 하나. 풀이 바닥나면(인원 > 식당 수) 그때만 겹친다
+const pickFrom = (pool, taken, rand) => {
+  const left = pool.filter((x) => !taken.includes(x));
+  const from = left.length ? left : pool;
+  return from[Math.floor(rand() * from.length)];
+};
+
+// 빈 칸만 서로 겹치지 않게 채운다
+export function fillEmpty(picks, pool, rand = Math.random) {
+  const out = [...picks];
+  for (let i = 0; i < out.length; i++) if (out[i] == null) out[i] = pickFrom(pool, out, rand);
+  return out;
+}
+
+// i번째 칸을 다시 뽑는다. 다른 사람 것과 지금 자기 것 모두와 다르게
+export const rerollPick = (picks, i, pool, rand = Math.random) =>
+  picks.map((m, j) => (j === i ? pickFrom(pool, picks, rand) : m));

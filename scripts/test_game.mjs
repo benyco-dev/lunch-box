@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { sizesFor, startBracket, pick, champion, roundName, reelStrip, resizePicks, fillEmpty } from "../site/game.js";
+import { sizesFor, startBracket, pick, champion, roundName, reelStrip, resizePicks, fillEmpty, rerollPick } from "../site/game.js";
 
 const menus = Array.from({ length: 20 }, (_, i) => `메뉴${i}`);
 
@@ -33,6 +33,14 @@ for (const pool of [["a"], ["a", "b", "c"], menus]) {
 // 함께 고르기
 assert.deepEqual(resizePicks(["a", null, "c"], 5), ["a", null, "c", null, null], "늘리면 뒤에 빈 칸");
 assert.deepEqual(resizePicks(["a", "b", "c"], 2), ["a", "b"], "줄이면 뒷사람부터 빠짐");
-const filled = fillEmpty(["a", null, "c", null], ["x", "y"], () => 0.99);
-assert.deepEqual(filled, ["a", "y", "c", "y"], "빈 칸만 채움");
+assert.deepEqual(fillEmpty(["a", null, "c", null], ["x", "y"], () => 0.99), ["a", "y", "c", "x"], "빈 칸만, 겹치지 않게 채움");
+const shops = Array.from({ length: 10 }, (_, i) => `s${i}`);
+for (let t = 0; t < 200; t++) {
+  const f = fillEmpty(Array(10).fill(null), shops);
+  assert.equal(new Set(f).size, 10, "식당 수만큼 인원이면 전부 달라야 함");
+  const r = rerollPick(f.slice(0, 5), 2, shops);
+  assert.equal(new Set(r).size, 5, "다시 뽑아도 겹치지 않음");
+  assert.notEqual(r[2], f[2], "다시 뽑으면 자기 것과도 다름");
+}
+assert.deepEqual(fillEmpty([null, null], ["x"], () => 0), ["x", "x"], "풀이 바닥나면 그때만 겹침");
 console.log("ok");

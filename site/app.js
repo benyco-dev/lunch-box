@@ -1,5 +1,5 @@
 // 표현만. 규칙은 game.js, 데이터는 data/*.json 이 가진다.
-import { shuffle, sizesFor, startBracket, pick, champion, roundName, reelStrip, resizePicks, fillEmpty } from "./game.js";
+import { shuffle, sizesFor, startBracket, pick, champion, roundName, reelStrip, resizePicks, fillEmpty, rerollPick } from "./game.js";
 
 const $ = (s) => document.querySelector(s);
 const h = (tag, props = {}, ...kids) => {
@@ -72,6 +72,7 @@ document.querySelectorAll("[data-tab]").forEach((tab) => {
       t.ariaSelected = String(t === tab);
       $(`#${t.dataset.tab}`).hidden = t !== tab;
     });
+    $("#chips").hidden = tab.dataset.tab === "group"; // 함께 탭은 목록이 이미 종목별로 묶여 있어 칩이 필요 없다
     replay($(`#${tab.dataset.tab}`));
   };
 });
@@ -102,7 +103,6 @@ const pic = (shop, className = "") =>
     safeUrl(shop?.photo) ? h("img", { src: shop.photo, alt: "", onerror: (e) => e.target.remove() }) : "",
   );
 const tile = (s) => h("figure", { className: "tile" }, pic(s), h("figcaption", { textContent: s.name }));
-const photoOf = (menu) => placesOf(menu).find((s) => s.photo); // 메뉴 대표 사진 = 가장 가까운 사진 있는 식당
 
 // ---- 사진 릴: 당첨은 호출하는 쪽이 미리 뽑고, 릴은 거기에 멈추는 연출만 한다. 룰렛과 함께 고르기가 같이 쓴다 ----
 let spinning = false;
@@ -172,10 +172,7 @@ const groupReel = reelOf($("#group-reel"));
 let picks = [null, null, null]; // 식당 id
 let shownRows = 0; // 새로 생긴 줄만 등장 애니메이션
 let flashRow = -1; // 방금 바뀐 줄 강조
-const randomShop = () => {
-  const list = shopPool();
-  return list[Math.floor(Math.random() * list.length)]?.id ?? null;
-};
+const shopIds = Object.keys(shops);
 
 // 식당마다 걸린 메뉴(카탈로그 순서). 첫 메뉴의 종목으로 목록을 묶는다
 const menusOfShop = {};
@@ -230,7 +227,7 @@ function renderGroup() {
           shopSelect(id, i), // 투명하게 위에 겹쳐 두어 줄 전체를 누르면 목록이 열린다
           h("i", { className: "ph ph-caret-down", ariaHidden: "true" }),
         ),
-        h("button", { className: "icon-btn", ariaLabel: `${i + 1}번 식당 랜덤으로 고르기`, onclick: () => setPick(i, randomShop()) },
+        h("button", { className: "icon-btn", ariaLabel: `${i + 1}번 식당 랜덤으로 고르기`, onclick: () => setPick(i, rerollPick(picks, i, shopIds)[i]) },
           h("i", { className: "ph ph-dice-five" })),
       )),
   );
@@ -245,7 +242,7 @@ $("#minus").onclick = () => setCount(picks.length - 1);
 $("#plus").onclick = () => setCount(picks.length + 1);
 $("#fill").onclick = () => {
   const before = picks;
-  picks = fillEmpty(picks, shopPool().map((s) => s.id));
+  picks = fillEmpty(picks, shopIds);
   flashRow = before.findIndex((m) => !m); // 첫 빈 칸을 강조
   renderGroup();
 };
@@ -269,46 +266,50 @@ $("#draw").onclick = () => {
   });
 };
 
-// ---- 월드컵 ----
+// ---- 월드컵: 종목의 식당끼리 토너먼트 ----
 let bracket = null;
 let choosing = false;
 
 // 고른 카드는 튀어 오르고 다른 카드는 가라앉은 뒤 다음 대결로 넘어간다
-async function choose(el, menu) {
+async function choose(el, shop) {
   if (choosing) return;
   choosing = true;
   const other = [...el.parentElement.querySelectorAll(".card")].find((c) => c !== el);
   if (!reducedMotion()) {
-    await Promise.all([
-      el.animate([{ transform: "scale(1)" }, { transform: "scale(1.06)" }],
-        { duration: 320, easing: "cubic-bezier(.34, 1.56, .64, 1)", fill: "forwards" }).finished,
-      other.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(.9) translateY(10px)" }],
-        { duration: 260, easing: "ease-in", fill: "forwards" }).finished,
+    // 탭이 가려지면 애니메이션이 멈춰 finished가 안 온다. 0.4초 넘게 기다리지 않는다
+    await Promise.race([
+      Promise.all([
+        el.animate([{ transform: "scale(1)" }, { transform: "scale(1.06)" }],
+          { duration: 320, easing: "cubic-bezier(.34, 1.56, .64, 1)", fill: "forwards" }).finished,
+        other.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(.9) translateY(10px)" }],
+          { duration: 260, easing: "ease-in", fill: "forwards" }).finished,
+      ]),
+      new Promise((r) => setTimeout(r, 400)),
     ]);
   }
   choosing = false;
-  bracket = pick(bracket, menu);
+  bracket = pick(bracket, shop);
   renderWorldcup();
 }
 
-const card = (menu, i) =>
-  h("button", { className: "card", style: `--i:${i}`, onclick: (e) => choose(e.currentTarget, menu) },
-    pic(placesOf(menu).find((s) => s.photo)),
-    h("strong", { textContent: menu }),
-    h("small", { textContent: [categoryOf[menu], placesOf(menu).length && `근처 ${placesOf(menu).length}곳`].filter(Boolean).join(" · ") }),
+const card = (shop, i) =>
+  h("button", { className: "card", style: `--i:${i}`, onclick: (e) => choose(e.currentTarget, shop) },
+    pic(shop),
+    h("strong", { textContent: shortName(shop) }),
+    h("small", { textContent: [menusText(shop), `${shop.distance}m`].filter(Boolean).join(" · ") }),
   );
 
 function renderWorldcup() {
   const box = $("#wc");
   if (!bracket) {
-    const n = pool().length, sizes = sizesFor(n);
+    const n = shopPool().length, sizes = sizesFor(n);
     box.replaceChildren(
       sizes.length
-        ? h("p", { className: "hint", textContent: `메뉴 ${n}개로 몇 강을 할까요?` })
-        : h("p", { className: "hint warn", textContent: `메뉴가 ${n}개뿐이라 8강을 못 만들어요. 전체나 룰렛으로 골라보세요.` }),
+        ? h("p", { className: "hint", textContent: `식당 ${n}곳으로 몇 강을 할까요?` })
+        : h("p", { className: "hint warn", textContent: `식당이 ${n}곳뿐이라 8강을 못 만들어요. 전체나 룰렛으로 골라보세요.` }),
       h("div", { className: "sizes" },
         ...sizes.map((s, i) =>
-          h("button", { className: "size", style: `--i:${i}`, onclick: () => { bracket = startBracket(pool(), s); renderWorldcup(); } },
+          h("button", { className: "size", style: `--i:${i}`, onclick: () => { bracket = startBracket(shopPool(), s); renderWorldcup(); } },
             h("strong", { textContent: `${s}강` }),
             h("span", { textContent: `${s - 1}번 고르기` }),
           )),
@@ -320,7 +321,7 @@ function renderWorldcup() {
   if (win) {
     bracket = null;
     renderWorldcup();
-    showResult("ph-trophy", "메뉴 월드컵 우승", win, placesOf(win));
+    showResult("ph-trophy", "월드컵 우승", win.name, [win]);
     return;
   }
   const { round, i } = bracket;
