@@ -42,11 +42,6 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: 식당 데이터 갱신"
           git push
 
-      - name: 지도 키 주입
-        env:
-          NAVER_MAP_KEY_ID: ${{ secrets.NAVER_MAP_KEY_ID }}
-        run: printf 'export default { naverMapKeyId: "%s" };\n' "$NAVER_MAP_KEY_ID" > site/config.js
-
       - uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}

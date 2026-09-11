@@ -9,11 +9,7 @@ const h = (tag, props = {}, ...kids) => {
 };
 const getJSON = (p) => fetch(p).then((r) => (r.ok ? r.json() : null), () => null);
 
-const [cfg, data, conf] = await Promise.all([
-  getJSON("data/menus.json"),
-  getJSON("data/restaurants.json"),
-  import("./config.js").then((m) => m.default, () => ({})), // CI가 생성. 로컬엔 없어도 지도만 빠진다
-]);
+const [cfg, data] = await Promise.all([getJSON("data/menus.json"), getJSON("data/restaurants.json")]);
 
 const places = data?.menus ?? {};
 const hasData = Object.keys(places).length > 0;
@@ -174,43 +170,32 @@ function showResult(menu, label) {
   $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-let mapsLoaded = null;
-const loadMaps = () =>
-  (mapsLoaded ??= !conf.naverMapKeyId
-    ? Promise.resolve(false)
-    : new Promise((ok) =>
-        document.head.append(h("script", {
-          src: `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(conf.naverMapKeyId)}`,
-          onload: () => ok(true),
-          onerror: () => ok(false),
-        })),
-      ));
-
+// 지도: Leaflet + OpenStreetMap 타일. API 키가 필요 없다
 let map = null;
+let layer = null;
 let markers = [];
 
-async function drawMap(list) {
-  const el = $("#map");
-  if (!(await loadMaps())) return;
-  el.hidden = false;
-  const { maps } = window.naver;
-  const home = new maps.LatLng(cfg.center.lat, cfg.center.lng);
+function drawMap(list) {
+  if (!window.L) return; // CDN이 막히면 목록만 보여준다
+  $("#map").hidden = false;
+  const home = [cfg.center.lat, cfg.center.lng];
   if (!map) {
-    map = new maps.Map(el, { center: home, zoom: 16 });
-    new maps.Marker({ map, position: home, title: cfg.center.name, icon: { content: '<div class="me">🏢</div>', anchor: new maps.Point(12, 12) } });
+    map = L.map("map").setView(home, 16);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
+    L.circle(home, { radius: cfg.radius, weight: 1, fillOpacity: 0.04 }).addTo(map);
+    L.marker(home, { title: cfg.center.name, icon: L.divIcon({ html: "🏢", className: "me", iconSize: [28, 28] }) }).addTo(map);
   }
-  markers.forEach((m) => m.setMap(null));
-  markers = list.map((r) => new maps.Marker({ map, position: new maps.LatLng(r.lat, r.lng), title: r.name }));
-  const bounds = new maps.LatLngBounds(home, home);
-  markers.forEach((m) => bounds.extend(m.getPosition()));
-  if (markers.length) map.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
-  else map.setCenter(home);
+  layer?.remove();
+  markers = list.map((r) => L.marker([r.lat, r.lng], { title: r.name }).bindPopup(h("strong", { textContent: r.name })));
+  layer = L.layerGroup(markers).addTo(map);
+  if (list.length) map.fitBounds([home, ...list.map((r) => [r.lat, r.lng])], { padding: [30, 30] });
+  else map.setView(home, 16);
 }
 
 function focusMarker(idx) {
   if (!map || !markers[idx]) return;
-  map.setZoom(18);
-  map.panTo(markers[idx].getPosition());
+  map.setView(markers[idx].getLatLng(), 18);
+  markers[idx].openPopup();
 }
 
 renderChips();

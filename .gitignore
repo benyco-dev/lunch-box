@@ -1,6 +1,5 @@
 .claude/
 .env
-site/config.js
 __pycache__/
 *.pyc
 .DS_Store

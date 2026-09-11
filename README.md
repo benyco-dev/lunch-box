@@ -4,13 +4,13 @@
 
 * **룰렛** — 종목(한식·중식·일식…)을 고르고 돌린다
 * **메뉴 월드컵** — 종목별 8강 / 16강 / 32강 토너먼트로 직접 고른다
-* 정해진 메뉴의 **근처 식당 목록 + 네이버 지도**
+* 정해진 메뉴의 **근처 식당 목록 + 지도**(OpenStreetMap, 키 불필요) + 네이버지도 링크
 
 서버 없이 Cloud Storage 버킷 하나로 서빙하고, GitHub Actions가 매월 식당을 다시 수집해 배포한다.
 
 ```
 GitHub Actions ─ 네이버 지역 검색 → site/data/restaurants.json ─(WIF, 키 파일 없음)→ GCS 버킷 → 공개 URL
-브라우저 ─ NAVER Maps JS (지도 표시만)
+브라우저 ─ Leaflet + OpenStreetMap 타일 (지도 표시만, API 키 없음)
 ```
 
 ## 구조
@@ -43,20 +43,18 @@ site/app.js                 표현   game.js 결과와 JSON을 그리기만 함
 cp .env.example .env                                # 키 채우기
 set -a; source .env; set +a
 python3 scripts/collect.py                          # 식당 수집
-printf 'export default { naverMapKeyId: "%s" };\n' "$NAVER_MAP_KEY_ID" > site/config.js
 python3 -m http.server 8000 -d site                 # http://localhost:8000
 ```
 
-의존성 없음. Python 3, Node 18+ 표준 라이브러리만 쓴다. `site/config.js` 가 없으면 지도만 빠지고 나머지는 동작한다.
+빌드 의존성 없음. Python 3, Node 18+ 표준 라이브러리만 쓴다. 지도 라이브러리 Leaflet은 cdnjs에서 SRI 해시로 고정해 불러온다.
 
 ## API 키 발급
 
 | 키 | 발급처 | 노출 |
 | --- | --- | --- |
 | `NAVER_SEARCH_CLIENT_ID` / `_SECRET` | [NAVER Developers](https://developers.naver.com/apps) → 애플리케이션 등록 → 검색 API | CI에서만. 사이트에 안 나감 |
-| `NAVER_MAP_KEY_ID` | [NAVER Cloud Platform](https://console.ncloud.com) → Maps → Application 등록 → Dynamic Map | 브라우저에 노출되는 키. **Web 서비스 URL 제한 필수** |
 
-Maps 앱의 Web 서비스 URL에 `https://storage.googleapis.com` 과 `http://localhost:8000` 을 등록한다.
+네이버 지도 API는 쓰지 않는다. 지도는 OpenStreetMap 타일이라 키가 필요 없고, 식당마다 네이버지도 검색 링크를 붙인다.
 
 ## 배포 인프라 (GCP)
 
@@ -81,10 +79,9 @@ REPO=<owner>/<repo>
 | `GCP_SA_EMAIL` | `gha-deploy@<프로젝트ID>.iam.gserviceaccount.com` |
 | `GCS_BUCKET` | 버킷 이름 |
 | `NAVER_SEARCH_CLIENT_ID` / `NAVER_SEARCH_CLIENT_SECRET` | 네이버 검색 API |
-| `NAVER_MAP_KEY_ID` | NCP Maps |
 
 접속: `https://storage.googleapis.com/<BUCKET>/index.html` — `/index.html` 까지 붙여야 한다.
 
 ## 데이터 출처
 
-식당 정보는 네이버 지역 검색 API, 지도는 NAVER Maps. 이 저장소는 네이버와 관련이 없다.
+식당 정보는 네이버 지역 검색 API, 지도는 © OpenStreetMap 기여자. 이 저장소는 네이버와 관련이 없다.
