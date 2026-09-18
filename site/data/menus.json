@@ -1,8 +1,10 @@
 {
   "locations": [
-    {"id": "gwacheon", "label": "과천 지정타", "name": "메가존산학연혁신센터", "lat": 37.4174009, "lng": 126.9775157, "regionWords": ["과천", "지식정보타운", "지정타", "갈현"]},
-    {"id": "yeoksam", "label": "역삼역", "name": "역삼역", "lat": 37.5006744, "lng": 127.0364695, "regionWords": ["역삼", "강남", "테헤란로"]},
-    {"id": "gangnam", "label": "강남역", "name": "강남역", "lat": 37.4980863, "lng": 127.0280014, "regionWords": ["강남역", "강남", "역삼", "서초"]}
+    {"id": "gwacheon", "label": "과천", "name": "메가존산학연혁신센터", "lat": 37.4174009, "lng": 126.9775157, "regionWords": ["과천", "지식정보타운", "지정타", "갈현"]},
+    {"id": "yeoksam", "label": "역삼", "name": "역삼역", "lat": 37.5006744, "lng": 127.0364695, "regionWords": ["역삼", "강남", "테헤란로"]},
+    {"id": "gangnam", "label": "강남", "name": "강남역", "lat": 37.4980863, "lng": 127.0280014, "regionWords": ["강남역", "강남", "역삼", "서초"]},
+    {"id": "magok", "label": "마곡", "name": "마곡역", "lat": 37.5602286, "lng": 126.8246969, "regionWords": ["마곡", "마곡나루", "강서"]},
+    {"id": "jamsil", "label": "잠실", "name": "잠실역", "lat": 37.5133111, "lng": 127.100231, "regionWords": ["잠실", "송파", "롯데월드"]}
   ],
   "radius": 500,
   "photoExclude": ["https://blog.naver.com/fnalz/224324534089"],

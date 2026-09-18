@@ -66,14 +66,19 @@ h1, h2, p { margin: 0; }
 .brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
 .nav-name { font-weight: 800; letter-spacing: -.02em; }
 /* 위치 전환: 상단 바 오른쪽 알약 */
-.locs { display: flex; gap: 4px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--surface-2) 80%, transparent); }
+.brand { flex: none; }
+.locs {
+  display: flex; gap: 2px; min-width: 0; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--surface-2) 80%, transparent);
+  overflow-x: auto; scrollbar-width: none; /* 위치가 더 늘어 좁은 화면을 넘으면 가로로 민다 */
+}
+.locs::-webkit-scrollbar { display: none; }
 .loc {
   padding: 6px 12px; border-radius: 999px; color: var(--muted); font-size: .85rem; font-weight: 700;
   text-decoration: none; white-space: nowrap; transition: background .25s var(--ease), color .25s var(--ease);
 }
 .loc:hover { color: var(--ink); }
 .loc[aria-current="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px var(--shadow), 0 0 0 1px var(--line); }
-@media (max-width: 480px) { .nav-name { display: none; } .loc { padding: 6px 10px; } }
+@media (max-width: 480px) { .nav-name { display: none; } .loc { padding: 6px 11px; } }
 .mark {
   flex: none; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center;
   background: var(--accent); color: #fff; font-size: 19px;
