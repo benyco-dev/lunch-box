@@ -1,6 +1,6 @@
 # 🍱 점심 뭐 먹지?
 
-회사 근처 반경 500m 식당으로 점심을 고르는 정적 사이트.
+**과천 지식정보타운 · 역삼역 · 강남역** 반경 500m 식당으로 점심을 고르는 정적 사이트. 상단 바에서 위치를 고르고, 주소 `?at=gangnam` 으로 위치를 공유한다.
 
 * **함께 고르기** (첫 탭): 인원(2~10명)을 정하고 사람마다 `식당 이름 (메뉴)` 목록에서 고르거나 랜덤으로 채운 뒤, 고른 식당들 중 하나를 뽑는다. 한 사람이 한 표라 여러 명이 고른 식당일수록 잘 뽑힌다.
 * **사진 룰렛**: 종목의 근처 식당 전체에서 균등하게 하나를 뽑고, 사진 띠가 흘러가다 그 식당에 멈춘다.
@@ -13,41 +13,82 @@
 
 ## 아키텍처
 
+### 1. GCP 구성: 어디에 있고 누가 무엇을 할 수 있나
+
+VPC와 존은 없다. 쓰는 리소스가 전부 관리형(IAM·WIF는 전역, 버킷은 리전)이라 네트워크를 직접 만들 일이 없다.
+
 ```mermaid
-flowchart LR
-  subgraph GH["GitHub Actions (매월 1일 cron · 수동 실행 · push)"]
-    T[로직 테스트] --> C[collect.py<br/>식당 수집]
-    C --> D[(site/data/<br/>restaurants.json)]
-    D --> K[데이터 변경분<br/>되커밋]
-    K --> A[WIF 인증<br/>키 파일 없음]
-    A --> R[gcloud storage rsync]
+flowchart TB
+  subgraph GLOBAL["전역 (global)"]
+    direction TB
+    POOL["WIF 풀 github<br/>프로바이더 github-actions<br/>조건: 이 저장소만"]
+    SA["서비스 계정<br/>gha-deploy"]
+    API["STS API<br/>IAM Credentials API"]
   end
-
-  KL[카카오 로컬 검색<br/>반경 500m 음식점] --> C
-  KB[카카오 블로그 검색<br/>대표 사진] --> C
-
-  subgraph GCP["Google Cloud"]
-    STS[STS + IAM Credentials<br/>토큰 교환] --> SA[서비스 계정<br/>gha-deploy]
-    SA --> B[(Cloud Storage 버킷<br/>asia-northeast3 · 공개 읽기)]
+  subgraph REGION["리전 asia-northeast3 (서울)"]
+    B[("Cloud Storage 버킷<br/>site/ 정적 파일")]
   end
+  GH["GitHub Actions<br/>OIDC 토큰"] -->|"토큰 교환"| API
+  API --> POOL
+  POOL -->|"roles/iam.workloadIdentityUser<br/>(이 저장소 principalSet)"| SA
+  SA -->|"roles/storage.objectAdmin<br/>roles/storage.legacyBucketReader<br/>(이 버킷에만)"| B
+  ALL["allUsers<br/>(누구나)"] -->|"roles/storage.objectViewer"| B
+```
 
-  A -. GitHub OIDC 토큰 .-> STS
-  R --> B
-  B --> U[브라우저]
-  OSM[OpenStreetMap 타일] --> U
-  CDN[jsDelivr · cdnjs<br/>글꼴 · 아이콘 · Leaflet] --> U
-  KC[카카오 CDN<br/>식당 썸네일] --> U
+### 2. 요청·배포 흐름
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant CR as GitHub Actions<br/>(매월 1일 · 수동)
+  participant KK as 카카오 API
+  participant G as GCP<br/>(STS · IAM)
+  participant B as Cloud Storage
+  participant U as 브라우저
+  CR->>KK: 위치 × 메뉴별 반경 500m 음식점 검색
+  CR->>KK: 식당별 블로그 검색 (대표 사진)
+  CR->>CR: restaurants-위치.json 되커밋
+  CR->>G: OIDC 토큰 → 1시간짜리 액세스 토큰
+  CR->>B: gcloud storage rsync site/
+  U->>B: index.html · app.js · 위치 데이터 JSON
+  U->>KK: 식당 썸네일 (카카오 CDN)
+  U->>U: 지도 타일은 OpenStreetMap
 ```
 
 push 때는 수집을 건너뛰고 테스트와 배포만 한다. 수집은 매월 cron과 수동 실행(`workflow_dispatch`) 때만 돈다.
+
+### 3. 앱 내부 도메인 경계
+
+```mermaid
+flowchart TB
+  CFG["menus.json<br/>위치 · 반경 · 메뉴 카탈로그"]
+  subgraph COLLECT["수집 (Python, CI에서만)"]
+    C1["search() · nearby()<br/>카카오 로컬"]
+    C2["pick_photo()<br/>블로그 글 검증"]
+    SLIM["slim()<br/>카카오 스키마는 여기까지만"]
+  end
+  DATA[("restaurants-위치.json<br/>데이터 계약")]
+  subgraph SITE["사이트 (브라우저)"]
+    APP["app.js<br/>표현: 그리기 · 이벤트"]
+    GAME["game.js<br/>도메인: 순수 함수<br/>토너먼트 · 릴 · 함께 고르기"]
+    REEL["reelOf()<br/>당첨은 먼저 뽑고<br/>릴은 연출만"]
+  end
+  CFG --> C1
+  CFG --> APP
+  C1 --> SLIM --> DATA
+  C2 --> DATA
+  DATA --> APP
+  APP -->|"입력 → 값"| GAME
+  APP --> REEL
+```
 
 ### 경계는 어디고 왜 거기인가
 
 | 경계 | 위치 | 이유 |
 | --- | --- | --- |
 | **외부 API ↔ 우리 데이터** | `scripts/collect.py` 의 `slim()` · `pick_photo()` | 카카오 응답 스키마는 여기서만 안다. 사이트는 `{id, name, category, address, lat, lng, distance, url, photo, photoSource}` 만 본다. 데이터 소스를 바꿔도 이 파일만 고친다. 실제로 네이버에서 카카오로 바꿀 때 사이트 코드는 거의 안 건드렸다. |
-| **수집 ↔ 사이트** | `site/data/restaurants.json` | 두 모듈 사이의 유일한 접점(데이터 계약). 나중에 API 서버가 필요해지면 이 JSON을 같은 모양의 HTTP 엔드포인트로 바꾸면 분리가 끝난다. 식당 79곳이라 DB는 필요 없다. |
-| **설정 ↔ 코드** | `site/data/menus.json` | 중심 좌표·반경·메뉴 카탈로그·지역 단어·사진 제외 목록. 수집기와 사이트가 같은 파일을 읽어서 메뉴 목록이 둘로 갈라질 수 없다. |
+| **수집 ↔ 사이트** | `site/data/restaurants-<위치>.json` | 두 모듈 사이의 유일한 접점(데이터 계약). 나중에 API 서버가 필요해지면 이 JSON을 같은 모양의 HTTP 엔드포인트(`/restaurants?at=`)로 바꾸면 분리가 끝난다. 위치당 파일 하나라 DB는 필요 없다. |
+| **설정 ↔ 코드** | `site/data/menus.json` | 위치(좌표·지역 단어)·반경·메뉴 카탈로그·사진 제외 목록. 수집기와 사이트가 같은 파일을 읽어서 둘이 갈라질 수 없다. 위치를 늘리려면 여기에 한 줄 추가하고 수집만 돌리면 된다. |
 | **도메인 ↔ 표현** | `site/game.js` ↔ `site/app.js` | `game.js` 는 토너먼트 진행, 릴 당첨 칸 배치, 함께 고르기 인원 조정 같은 순수 함수만 둔다. DOM·fetch·전역 상태가 없어서 브라우저와 node 테스트에서 같은 코드가 돈다. `app.js` 는 그 결과를 그리기만 한다. |
 | **결정 ↔ 연출** | `app.js` 의 `reelOf()` | 당첨은 `Math.random()` 으로 먼저 뽑고, 사진 릴은 그 칸에 멈추는 애니메이션만 한다. 연출이 확률을 바꿀 수 없다. 룰렛과 함께 고르기가 같은 릴을 쓴다. |
 | **배포 권한** | WIF `attribute-condition` | GCP는 이 저장소에서 발급된 GitHub 토큰만 받는다. 서비스 계정은 이 버킷에만 쓸 수 있다. |
@@ -55,8 +96,8 @@ push 때는 수집을 건너뛰고 테스트와 배포만 한다. 수집은 매�
 ### 구조
 
 ```
-site/data/menus.json        설정     중심 좌표·반경·메뉴 카탈로그·지역 단어·사진 제외 목록
-site/data/restaurants.json  데이터   수집 결과. 식당(id별) + 메뉴별 식당 id 목록
+site/data/menus.json        설정     위치 목록·반경·메뉴 카탈로그·사진 제외 목록
+site/data/restaurants-*.json 데이터  위치별 수집 결과. 식당(id별) + 메뉴별 식당 id 목록
 scripts/collect.py          수집     카카오 로컬 키워드 검색 + 블로그 검색(대표 사진)
 scripts/test_collect.py     검증     응답 변환·반경 필터·중복 제거·대표 사진 매칭
 site/game.js                도메인   토너먼트·릴 당첨 칸·함께 고르기. DOM·fetch 없음
@@ -102,7 +143,7 @@ site/index.html, style.css  표현
 | Cloud Scheduler | 월 1회 수집은 GitHub Actions `schedule` 로 충분하고, 수집 결과를 저장소에 커밋까지 해야 한다. |
 | Secret Manager | 카카오 키는 CI에서만 쓰여서 GitHub 시크릿으로 충분하다. GCP 안에서 도는 런타임(Cloud Run 등)이 생기면 옮긴다. |
 | 외부 HTTPS 로드밸런서 + Cloud CDN | 커스텀 도메인에는 필요하지만 트래픽과 무관하게 월 $18 정도 고정비가 든다. |
-| Firestore · BigQuery | 식당 79곳짜리 JSON 하나라 DB가 오버킬이다. |
+| Firestore · BigQuery | 위치당 JSON 파일 하나(수백 KB)라 DB가 오버킬이다. |
 
 ### Google Cloud 밖에서 쓰는 것
 
@@ -130,7 +171,7 @@ site/index.html, style.css  표현
 | Cloud Storage 저장 | 약 150KB | 사실상 0 |
 | 업로드 작업 | 배포당 수십 건 | 사실상 0 |
 | 네트워크 이그레스 | 방문자 수에 비례. 사진은 카카오 CDN에서 받아서 버킷 트래픽은 작다. | 1GB당 약 $0.12 |
-| 카카오 API | 월 1회 수백 호출 | 무료 한도 안 |
+| 카카오 API | 월 1회, 위치당 수백 호출 | 무료 한도 안 |
 
 ---
 
@@ -139,7 +180,8 @@ site/index.html, style.css  표현
 ```bash
 cp .env.example .env                     # KAKAO_REST_API_KEY 채우기
 set -a; source .env; set +a
-python3 scripts/collect.py               # 식당 수집 (2분 정도)
+python3 scripts/collect.py               # 모든 위치 수집 (위치당 2~5분)
+python3 scripts/collect.py gangnam       # 한 위치만
 python3 scripts/test_collect.py          # 수집 로직 검증
 node scripts/test_game.mjs               # 게임 로직 검증
 python3 -m http.server 8000 -d site      # http://localhost:8000
@@ -150,6 +192,16 @@ python3 -m http.server 8000 -d site      # http://localhost:8000
 ### 카카오 API 키
 
 [Kakao Developers](https://developers.kakao.com)에서 앱을 만들고 **REST API 키**를 복사한다. **제품 설정 → 카카오맵** 사용 설정도 켜야 한다.
+
+## 위치 추가하기
+
+`site/data/menus.json` 의 `locations` 에 한 줄을 넣고 수집을 돌린다. 사이트 상단 바에 자동으로 나타난다.
+
+```json
+{"id": "pangyo", "label": "판교역", "name": "판교역", "lat": 37.3948, "lng": 127.1112, "regionWords": ["판교", "분당"]}
+```
+
+`regionWords` 는 대표 사진 검증에 쓴다. 후기 글에 식당 이름과 이 단어 중 하나가 같이 있어야 사진으로 쓴다.
 
 ## 배포 인프라 만들기
 

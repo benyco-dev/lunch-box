@@ -18,7 +18,13 @@ const replay = (el) => {
   el.classList.add("enter");
 };
 
-const [cfg, data] = await Promise.all([getJSON("data/menus.json"), getJSON("data/restaurants.json")]);
+const cfg = await getJSON("data/menus.json");
+// 위치: 주소의 ?at= → 지난번 고른 위치 → 첫 위치. 주소로 공유하면 같은 위치가 열린다
+const remembered = (() => { try { return localStorage.getItem("at"); } catch { return null; } })();
+const wanted = new URLSearchParams(location.search).get("at") ?? remembered;
+const loc = cfg.locations.find((l) => l.id === wanted) ?? cfg.locations[0];
+try { localStorage.setItem("at", loc.id); } catch {}
+const data = await getJSON(`data/restaurants-${loc.id}.json`);
 
 const shops = data?.restaurants ?? {};
 const hasData = Object.keys(shops).length > 0;
@@ -37,8 +43,14 @@ const shopPool = () => [...new Set(pool().flatMap(placesOf))];
 
 const shopCount = Object.keys(shops).length;
 const updated = hasData && new Date(data.updated).toLocaleDateString("ko-KR", { month: "long", day: "numeric" });
-$("#status").textContent = hasData ? `식당 ${shopCount}곳, ${updated} 갱신` : "식당 데이터 수집 전";
-$("#hero-sub").textContent = `${cfg.center.name} 반경 ${cfg.radius}m 안의 ${hasData ? `식당 ${shopCount}곳` : "식당"}을 여럿이 함께, 또는 룰렛이나 월드컵으로 골라요.`;
+$("#updated").textContent = hasData ? `, ${updated} 갱신` : "";
+$("#hero-sub").textContent = `${loc.name} 반경 ${cfg.radius}m 안의 ${hasData ? `식당 ${shopCount}곳` : "식당"}을 여럿이 함께, 또는 룰렛이나 월드컵으로 골라요.`;
+
+// 위치 전환: 고른 위치로 주소를 바꿔 다시 연다. 데이터·게임 상태가 위치마다 달라서 새로 여는 게 제일 단순하다
+$("#locs").replaceChildren(
+  ...cfg.locations.map((l) =>
+    h("a", { className: "loc", href: `?at=${l.id}`, textContent: l.label, ariaCurrent: l.id === loc.id ? "true" : null })),
+);
 
 // ---- 첫 화면 사진 벽: 열마다 같은 사진을 두 벌 깔아 CSS로 끝없이 흘린다 ----
 function buildWall() {
@@ -370,7 +382,7 @@ let markers = [];
 function drawMap(list) {
   if (!window.L) return; // CDN이 막히면 목록만 보여준다
   $("#map").hidden = false;
-  const home = [cfg.center.lat, cfg.center.lng];
+  const home = [loc.lat, loc.lng];
   const icon = (name, className, size, anchor) =>
     L.divIcon({ html: `<i class="ph-fill ${name}"></i>`, className, iconSize: [size, size], iconAnchor: anchor, popupAnchor: [0, -24] });
   if (!map) {
@@ -378,7 +390,7 @@ function drawMap(list) {
     map = L.map("map").setView(home, 16);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
     L.circle(home, { radius: cfg.radius, color: accent, weight: 1.5, fillOpacity: 0.06 }).addTo(map);
-    L.marker(home, { title: cfg.center.name, icon: icon("ph-buildings", "me", 34) }).addTo(map);
+    L.marker(home, { title: loc.name, icon: icon("ph-buildings", "me", 34) }).addTo(map);
   }
   layer?.remove();
   markers = list.map((r) =>
