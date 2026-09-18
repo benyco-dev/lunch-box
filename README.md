@@ -38,21 +38,21 @@ flowchart TB
 ### 2. 요청·배포 흐름
 
 ```mermaid
-sequenceDiagram
-  autonumber
-  participant CR as GitHub Actions<br/>(매월 1일 · 수동)
-  participant KK as 카카오 API
-  participant G as GCP<br/>(STS · IAM)
-  participant B as Cloud Storage
-  participant U as 브라우저
-  CR->>KK: 위치 × 메뉴별 반경 500m 음식점 검색
-  CR->>KK: 식당별 블로그 검색 (대표 사진)
-  CR->>CR: restaurants-위치.json 되커밋
-  CR->>G: OIDC 토큰 → 1시간짜리 액세스 토큰
-  CR->>B: gcloud storage rsync site/
-  U->>B: index.html · app.js · 위치 데이터 JSON
-  U->>KK: 식당 썸네일 (카카오 CDN)
-  U->>U: 지도 타일은 OpenStreetMap
+flowchart TB
+  subgraph DEPLOY["배포: GitHub Actions (매월 1일 · 수동)"]
+    direction TB
+    D1["위치 × 메뉴별<br/>반경 500m 음식점 검색<br/>(카카오 로컬)"] --> D2["식당별 블로그 검색<br/>대표 사진"]
+    D2 --> D3["restaurants-위치.json<br/>되커밋"]
+    D3 --> D4["OIDC 토큰 → STS<br/>1시간짜리 액세스 토큰"]
+    D4 --> D5["gcloud storage rsync"]
+  end
+  D5 --> B[("Cloud Storage 버킷")]
+  subgraph REQ["요청: 브라우저"]
+    direction TB
+    U1["index.html · app.js"] --> U2["?at= 위치의<br/>데이터 JSON"]
+    U2 --> U3["썸네일: 카카오 CDN<br/>지도: OpenStreetMap"]
+  end
+  B --> U1
 ```
 
 push 때는 수집을 건너뛰고 테스트와 배포만 한다. 수집은 매월 cron과 수동 실행(`workflow_dispatch`) 때만 돈다.
