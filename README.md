@@ -21,12 +21,12 @@ VPC와 존은 없다. 쓰는 리소스가 전부 관리형(IAM·WIF는 전역, �
 flowchart TB
   subgraph GLOBAL["전역 (global)"]
     direction TB
-    POOL["WIF 풀 github<br/>프로바이더 github-actions<br/>조건: 이 저장소만"]
-    SA["서비스 계정<br/>gha-deploy"]
-    API["STS API<br/>IAM Credentials API"]
+    POOL@{ img: "https://raw.githubusercontent.com/benyco-dev/benyco-dev.github.io/master/assets/gcp-icons/security-identity.svg", label: "WIF 풀 github<br/>프로바이더 github-actions<br/>조건: 이 저장소만", pos: "b", w: 48, h: 48, constraint: "on" }
+    SA@{ img: "https://raw.githubusercontent.com/benyco-dev/benyco-dev.github.io/master/assets/gcp-icons/security-identity.svg", label: "서비스 계정<br/>gha-deploy", pos: "b", w: 48, h: 48, constraint: "on" }
+    API@{ img: "https://raw.githubusercontent.com/benyco-dev/benyco-dev.github.io/master/assets/gcp-icons/security-identity.svg", label: "STS API<br/>IAM Credentials API", pos: "b", w: 48, h: 48, constraint: "on" }
   end
   subgraph REGION["리전 asia-northeast3 (서울)"]
-    B[("Cloud Storage 버킷<br/>site/ 정적 파일")]
+    B@{ img: "https://raw.githubusercontent.com/benyco-dev/benyco-dev.github.io/master/assets/gcp-icons/cloud-storage.svg", label: "Cloud Storage 버킷<br/>site/ 정적 파일", pos: "b", w: 48, h: 48, constraint: "on" }
   end
   GH["GitHub Actions<br/>OIDC 토큰"] -->|"토큰 교환"| API
   API --> POOL
